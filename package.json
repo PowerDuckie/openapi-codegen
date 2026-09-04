@@ -18,12 +18,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PowerDuckie/-powerduck-openapi-codegen.git"
+    "url": "git+https://github.com/PowerDuckie/openapi-codegen.git"
   },
   "bugs": {
-    "url": "https://github.com/PowerDuckie/-powerduck-openapi-codegen/issues"
+    "url": "https://github.com/PowerDuckie/openapi-codegen/issues"
   },
-  "homepage": "https://github.com/PowerDuckie/-powerduck-openapi-codegen#readme",
+  "homepage": "https://github.com/PowerDuckie/openapi-codegen#readme",
   "engines": {
     "node": ">=20"
   },
