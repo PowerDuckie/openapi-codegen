@@ -1,6 +1,6 @@
 {
   "name": "@powerduck/openapi-codegen",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Generate HTTP client examples from OpenAPI documents.",
   "type": "module",
   "main": "./dist/index.js",
@@ -32,7 +32,7 @@
     "build": "tsup src/index.ts --format esm --dts --clean",
     "test": "vitest run",
     "test:watch": "vitest",
-    "demo": "tsx demo/demo.ts",
+    "demo": "tsx demo/index.ts",
     "fuzz": "vitest run tests/fuzz.test.ts",
     "check": "npm test && npm run fuzz && npm run build",
     "preversion": "npm run check",

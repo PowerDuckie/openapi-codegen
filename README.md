@@ -1,28 +1,62 @@
 # @powerduck/openapi-codegen
 
-Generate runnable HTTP client examples from OpenAPI documents across multiple languages and libraries.
+Generate runnable HTTP request examples from parsed OpenAPI documents for **21 language targets** and **41 language/client combinations**.
+
+`@powerduck/openapi-codegen` is an ESM-first TypeScript library for API documentation systems, developer portals, API explorers, command-line tools, and build-time code generation.
 
 ## Features
 
-- Supports OpenAPI documents, including OpenAPI 3.2
-- Generates examples for multiple languages and HTTP clients
-- Handles path, query, header, and cookie parameters
-- Supports API key, bearer token, and other security schemes
-- Supports JSON, form URL-encoded, text, and multipart request bodies
-- Handles multipart file uploads
-- Preserves already serialized request bodies
-- Generates request timeouts and non-2xx error handling where supported
-- Provides a simple generator discovery API
+- Supports parsed OpenAPI documents, including OpenAPI 3.2
+- Generates readable HTTP request examples across 41 generators
+- Resolves path, query, header, and cookie parameters
+- Supports API key, HTTP bearer, and other security schemes
+- Supports JSON, plain-text, URL-encoded form, and multipart bodies
+- Generates multipart file-upload examples with placeholder paths
+- Preserves request bodies that have already been serialized
+- Adds timeouts, HTTP status checks, and resource cleanup where supported
+- Exposes generator discovery through `list()`
 - Includes TypeScript declarations
 - Ships as an ECMAScript module
+
+## Supported Languages and Clients
+
+Use the exact `language` and `client` identifiers shown below when calling `generate()`. Identifiers are case-sensitive.
+
+| Language          | `language`   | Supported `client` values                                         |
+| ----------------- | ------------ | ----------------------------------------------------------------- |
+| C                 | `c`          | `libcurl`                                                         |
+| C#                | `csharp`     | `httpclient`, `restsharp`                                         |
+| Clojure           | `clojure`    | `clj-http`                                                        |
+| Dart              | `dart`       | `http`                                                            |
+| F#                | `fsharp`     | `httpclient`                                                      |
+| Go                | `go`         | `new-request`                                                     |
+| HTTP request file | `http`       | `http1`                                                           |
+| Java              | `java`       | `asynchttp`, `java-net-http`, `okhttp`, `unirest`                 |
+| JavaScript        | `javascript` | `fetch`, `axios`, `ofetch`, `jquery`, `xhr`                       |
+| Kotlin            | `kotlin`     | `okhttp`                                                          |
+| Node.js           | `node`       | `fetch`, `axios`, `ofetch`, `undici`                              |
+| Objective-C       | `objc`       | `nsurlsession`                                                    |
+| OCaml             | `ocaml`      | `cohttp`                                                          |
+| PHP               | `php`        | `curl`, `guzzle`, `laravel-http`                                  |
+| PowerShell        | `powershell` | `invoke-webrequest`, `invoke-restmethod`                          |
+| Python            | `python`     | `http-client`, `requests`, `aiohttp`, `httpx-sync`, `httpx-async` |
+| R                 | `r`          | `httr2`                                                           |
+| Ruby              | `ruby`       | `net-http`                                                        |
+| Rust              | `rust`       | `reqwest`                                                         |
+| Shell             | `shell`      | `curl`, `wget`, `httpie`                                          |
+| Swift             | `swift`      | `nsurlsession`                                                    |
+
+> Generator availability does not imply that every client can represent every OpenAPI operation. For example, GNU Wget cannot safely construct arbitrary `multipart/form-data` requests. Use `shell/curl` or `shell/httpie` for multipart uploads.
 
 ## Requirements
 
 - Node.js 20 or later
-- An OpenAPI document
-- The runtime and dependencies required by the generated client
+- A parsed OpenAPI document
+- The runtime and dependencies required by the selected generated client
 
 ## Installation
+
+Using npm:
 
 ```bash
 npm install @powerduck/openapi-codegen
@@ -59,9 +93,9 @@ console.log(code);
 
 `generate()` returns the generated source code as a string.
 
-## Generate an Authenticated Request
+## Authentication
 
-Provide security credentials through `securityValues`:
+Provide credentials through `securityValues`:
 
 ```ts
 import { generate } from "@powerduck/openapi-codegen";
@@ -82,11 +116,11 @@ const code = generate({
 console.log(code);
 ```
 
-The keys in `securityValues` should match the security scheme names defined by the OpenAPI document.
+The keys in `securityValues` must match the security scheme names defined in the OpenAPI document.
 
 Do not commit real credentials to source control.
 
-## Generate a Multipart Upload
+## Multipart Uploads
 
 ```ts
 import { generate } from "@powerduck/openapi-codegen";
@@ -106,25 +140,27 @@ const code = generate({
 console.log(code);
 ```
 
-Generated multipart examples may include placeholder file paths such as:
+Generated multipart examples may include placeholder file paths:
 
 ```text
 /tmp/file.bin
 ```
 
-Replace placeholder paths before running the generated code.
+Replace all placeholder paths before running the generated code.
 
-Some HTTP clients cannot safely represent every OpenAPI request. For example, GNU Wget cannot reliably construct multipart form-data requests. In those cases, generation may fail with a descriptive error. Use another supported client such as curl or HTTPie.
+Some clients cannot safely represent every OpenAPI request. Generation may throw a descriptive error when the selected client is incompatible with an operation.
+
+For example, `shell/wget` does not support arbitrary multipart generation. Use `shell/curl` or `shell/httpie` instead.
 
 ## Discover Available Generators
 
-Use `list()` to inspect the installed language and client combinations:
+Use `list()` to inspect every installed language/client combination:
 
 ```ts
 import { list } from "@powerduck/openapi-codegen";
 
-for (const generator of list()) {
-  console.log(`${generator.language}/${generator.client}`);
+for (const { language, client } of list()) {
+  console.log(`${language}/${client}`);
 }
 ```
 
@@ -135,7 +171,7 @@ import { generate, list } from "@powerduck/openapi-codegen";
 import document from "./openapi.json" with { type: "json" };
 
 const generator = list().find(
-  (item) => item.language === "javascript" && item.client === "fetch",
+  ({ language, client }) => language === "javascript" && client === "fetch",
 );
 
 if (!generator) {
@@ -153,11 +189,11 @@ const code = generate({
 console.log(code);
 ```
 
-## API
+## API Reference
 
 ### `generate(options)`
 
-Generates an HTTP client example.
+Generates an HTTP request example for an OpenAPI operation.
 
 ```ts
 const code = generate({
@@ -172,14 +208,14 @@ const code = generate({
 
 #### Options
 
-| Option           | Type                     | Required | Description                       |
-| ---------------- | ------------------------ | -------- | --------------------------------- |
-| `document`       | `unknown`                | Yes      | Parsed OpenAPI document           |
-| `path`           | `string`                 | Yes      | Exact OpenAPI path template       |
-| `method`         | `string`                 | Yes      | HTTP operation method             |
-| `language`       | `string`                 | Yes      | Target language identifier        |
-| `client`         | `string`                 | Yes      | Target HTTP client identifier     |
-| `securityValues` | `Record<string, string>` | No       | Values for named security schemes |
+| Option           | Type                     | Required | Description                            |
+| ---------------- | ------------------------ | -------: | -------------------------------------- |
+| `document`       | `unknown`                |      Yes | Parsed OpenAPI document                |
+| `path`           | `string`                 |      Yes | Exact OpenAPI path template            |
+| `method`         | `string`                 |      Yes | HTTP operation method                  |
+| `language`       | `string`                 |      Yes | Target language identifier             |
+| `client`         | `string`                 |      Yes | Target HTTP client identifier          |
+| `securityValues` | `Record<string, string>` |       No | Credentials for named security schemes |
 
 #### Return Value
 
@@ -218,13 +254,13 @@ try {
 
 ### `list()`
 
-Returns the available generator descriptors.
+Returns the available generator descriptors:
 
 ```ts
 const generators = list();
 ```
 
-Each descriptor includes the values required to select its language and client:
+Each descriptor contains the identifiers required by `generate()`:
 
 ```ts
 for (const { language, client } of generators) {
@@ -234,13 +270,16 @@ for (const { language, client } of generators) {
 
 ## OpenAPI Document Input
 
-Pass a parsed JavaScript object rather than a JSON string:
+Pass a parsed JavaScript object rather than a JSON or YAML source string.
+
+### JSON
 
 ```ts
 import { readFile } from "node:fs/promises";
 import { generate } from "@powerduck/openapi-codegen";
 
-const document = JSON.parse(await readFile("./openapi.json", "utf8"));
+const source = await readFile("./openapi.json", "utf8");
+const document = JSON.parse(source);
 
 const code = generate({
   document,
@@ -253,7 +292,15 @@ const code = generate({
 console.log(code);
 ```
 
-For YAML documents, parse the file with a YAML library before passing it to `generate()`:
+### YAML
+
+Install a YAML parser separately:
+
+```bash
+npm install yaml
+```
+
+Parse the document before passing it to `generate()`:
 
 ```ts
 import { readFile } from "node:fs/promises";
@@ -274,27 +321,21 @@ const code = generate({
 console.log(code);
 ```
 
-Install the optional YAML parser separately:
-
-```bash
-npm install yaml
-```
-
 ## Generated Code
 
-Generated examples are intended to be readable starting points. Depending on the selected language and client, they may include:
+Generated examples are intended to be readable, runnable starting points. Depending on the selected language and client, they may include:
 
 - A 30-second connection or request timeout
 - HTTP status validation
-- Response-body output
+- Response body output
 - Resource cleanup
-- Dependency and runtime notes
+- Runtime and dependency notes
 - Placeholder multipart file paths
 - Environment-specific proxy or TLS behavior
 
 Review generated code before using it in production. You may need to:
 
-- Install the target client's dependencies
+- Install dependencies for the selected client
 - Replace placeholder parameter values
 - Replace multipart file paths
 - Supply authentication credentials securely
@@ -305,7 +346,7 @@ Review generated code before using it in production. You may need to:
 
 ## Development
 
-Clone the repository:
+Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/PowerDuckie/-powerduck-openapi-codegen.git
@@ -319,7 +360,7 @@ Run the test suite:
 npm test
 ```
 
-Run fuzz tests:
+Run property-based fuzz tests:
 
 ```bash
 npm run fuzz
@@ -356,7 +397,7 @@ Run all tests:
 npm test
 ```
 
-Update snapshots after intentionally changing generator output:
+Update snapshots after intentionally changing generated output:
 
 ```bash
 npx vitest run -u
@@ -368,17 +409,24 @@ Run only the fuzz test suite:
 npm run fuzz
 ```
 
+Before committing snapshot changes, inspect the diff:
+
+```bash
+git diff
+```
+
 ## Releasing
 
-Before releasing, make sure:
+Before releasing, verify that:
 
 - The working tree is clean
 - You are on the intended branch
+- The full validation suite passes
 - You are authenticated with npm
-- The package name is available or owned by your npm organization
-- The Git remote points to the correct repository
+- The package is owned by your npm account or organization
+- The Git remote points to the intended repository
 
-Check the repository:
+Check the repository state:
 
 ```bash
 git status
@@ -391,9 +439,15 @@ Sign in to npm:
 npm login
 ```
 
+Inspect the package contents without publishing:
+
+```bash
+npm pack --dry-run
+```
+
 ### Patch Release
 
-For backward-compatible bug fixes:
+Use a patch release for backward-compatible bug fixes:
 
 ```bash
 npm run release:patch
@@ -407,7 +461,7 @@ Example:
 
 ### Minor Release
 
-For backward-compatible features:
+Use a minor release for backward-compatible features:
 
 ```bash
 npm run release:minor
@@ -421,7 +475,7 @@ Example:
 
 ### Major Release
 
-For breaking changes:
+Use a major release for breaking changes:
 
 ```bash
 npm run release:major
@@ -435,16 +489,10 @@ Example:
 
 The release scripts run the configured checks, update the package version, create a Git commit and tag, and push the commit and tags.
 
-Publish the package:
+Publish the public scoped package:
 
 ```bash
 npm publish --access public
-```
-
-To inspect the package contents before publishing:
-
-```bash
-npm pack --dry-run
 ```
 
 ## Initial GitHub Setup
@@ -467,7 +515,7 @@ git remote set-url origin https://github.com/PowerDuckie/-powerduck-openapi-code
 git push -u origin main
 ```
 
-## Package Structure
+## Project Structure
 
 A typical project layout is:
 
@@ -492,13 +540,13 @@ A typical project layout is:
 
 ## Security
 
-Generated source code can contain request URLs, headers, parameter values, and security credentials supplied to the generator.
+Generated source code can contain request URLs, headers, parameter values, and credentials supplied to the generator.
 
 Avoid:
 
-- Committing generated examples containing real credentials
+- Committing generated examples that contain real credentials
 - Logging secrets in CI output
-- Using unreviewed generated commands in production
+- Running unreviewed generated commands in production
 - Passing untrusted file paths directly to generated upload code
 
 Report security issues privately to the repository owner instead of opening a public issue.
@@ -511,7 +559,7 @@ Contributions are welcome.
 2. Create a feature branch.
 3. Add or update tests.
 4. Run the full validation suite.
-5. Commit your changes.
+5. Commit the changes.
 6. Open a pull request.
 
 ```bash
@@ -523,7 +571,7 @@ git commit -m "feat: describe the change"
 git push -u origin feature/my-change
 ```
 
-When changing generator output, update and review the affected snapshots:
+When changing generated output, update and review the affected snapshots:
 
 ```bash
 npx vitest run -u
@@ -532,4 +580,4 @@ git diff
 
 ## License
 
-MIT
+[MIT](LICENSE)
