@@ -1,0 +1,3671 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`all > c/libcurl 1`] = `
+"#include <curl/curl.h>
+#include <stdio.h>
+int main(void) {
+  CURL *curl = curl_easy_init();
+  if (!curl) return 1;
+  curl_easy_setopt(curl, CURLOPT_URL, "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y");
+  curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
+  /* header: Authorization: Bearer TOKEN */
+  /* header: X-Key: KEY */
+  /* header: Cookie: sid=cookie */
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}");
+  curl_easy_perform(curl);
+  curl_easy_cleanup(curl);
+  return 0;
+}"
+`;
+
+exports[`all > clojure/clj-http 1`] = `
+"(require '[clj-http.client :as client])
+(println (:body (client/request {
+  :method :post
+  :url "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"
+  :headers {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+}
+  :body "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}"
+})))"
+`;
+
+exports[`all > csharp/httpclient 1`] = `
+"using System.Net.Http;
+using System.Text;
+
+using var client = new HttpClient();
+using var request = new HttpRequestMessage(HttpMethod.Post, @"https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y");
+request.Headers.TryAddWithoutValidation(@"Authorization", @"Bearer TOKEN");
+request.Headers.TryAddWithoutValidation(@"X-Key", @"KEY");
+request.Headers.TryAddWithoutValidation(@"Cookie", @"sid=cookie");
+request.Content = new StringContent(@"{
+  ""file"": {
+    ""__file"": true,
+    ""path"": ""/tmp/file.bin"",
+    ""name"": ""file.bin"",
+    ""contentType"": ""application/octet-stream""
+  },
+  ""name"": ""Ada""
+}", Encoding.UTF8, @"multipart/form-data");
+using var response = await client.SendAsync(request);
+Console.WriteLine(await response.Content.ReadAsStringAsync());"
+`;
+
+exports[`all > csharp/restsharp 1`] = `
+"using RestSharp;
+
+var client = new RestClient(@"https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y");
+var request = new RestRequest("", Method.Post);
+request.AddHeader(@"Authorization", @"Bearer TOKEN");
+request.AddHeader(@"X-Key", @"KEY");
+request.AddHeader(@"Cookie", @"sid=cookie");
+request.AddStringBody(@"{
+  ""file"": {
+    ""__file"": true,
+    ""path"": ""/tmp/file.bin"",
+    ""name"": ""file.bin"",
+    ""contentType"": ""application/octet-stream""
+  },
+  ""name"": ""Ada""
+}", @"multipart/form-data");
+var response = await client.ExecuteAsync(request);
+Console.WriteLine(response.Content);"
+`;
+
+exports[`all > dart/http 1`] = `
+"import 'package:http/http.dart' as http;
+Future<void> main() async {
+  final uri = Uri.parse("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y");
+  final response = await http.Request("POST", uri)
+    ..headers.addAll({
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+})
+    ..body = "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}"
+  ;
+  final streamed = await response.send();
+  print(await streamed.stream.bytesToString());
+}"
+`;
+
+exports[`all > fsharp/httpclient 1`] = `
+"open System
+open System.Net.Http
+open System.Text
+let client = new HttpClient()
+let request = new HttpRequestMessage(new HttpMethod("POST"), "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+request.Headers.TryAddWithoutValidation("Authorization", "Bearer TOKEN") |> ignore
+request.Headers.TryAddWithoutValidation("X-Key", "KEY") |> ignore
+request.Headers.TryAddWithoutValidation("Cookie", "sid=cookie") |> ignore
+request.Content <- new StringContent("{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}", Encoding.UTF8, "multipart/form-data")
+let response = client.Send(request)
+printfn "%s" (response.Content.ReadAsStringAsync().Result)"
+`;
+
+exports[`all > go/new-request 1`] = `
+"package main
+
+import (
+  "fmt"
+  "io"
+  "net/http"
+  "strings"
+)
+
+func main() {
+  req, err := http.NewRequest("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", strings.NewReader("{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}"))
+  if err != nil { panic(err) }
+  req.Header.Set("Authorization", "Bearer TOKEN")
+  req.Header.Set("X-Key", "KEY")
+  req.Header.Set("Cookie", "sid=cookie")
+  resp, err := http.DefaultClient.Do(req)
+  if err != nil { panic(err) }
+  defer resp.Body.Close()
+  body, err := io.ReadAll(resp.Body)
+  if err != nil { panic(err) }
+  fmt.Println(string(body))
+}"
+`;
+
+exports[`all > http/http1 1`] = `
+"POST https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y HTTP/1.1
+Authorization: Bearer TOKEN
+X-Key: KEY
+Cookie: sid=cookie
+
+{
+  "file": {
+    "__file": true,
+    "path": "/tmp/file.bin",
+    "name": "file.bin",
+    "contentType": "application/octet-stream"
+  },
+  "name": "Ada"
+}"
+`;
+
+exports[`all > java/asynchttp 1`] = `
+"import org.asynchttpclient.*;
+import static org.asynchttpclient.Dsl.*;
+
+public class Example {
+  public static void main(String[] args) throws Exception {
+    try (AsyncHttpClient client = asyncHttpClient()) {
+      BoundRequestBuilder request = client.prepare("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y");
+      request.addHeader("Authorization", "Bearer TOKEN");
+      request.addHeader("X-Key", "KEY");
+      request.addHeader("Cookie", "sid=cookie");
+      request.setBody("{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}");
+      Response response = request.execute().get();
+      System.out.println(response.getResponseBody());
+    }
+  }
+}"
+`;
+
+exports[`all > java/java-net-http 1`] = `
+"import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class Example {
+  public static void main(String[] args) throws Exception {
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest.Builder builder = HttpRequest.newBuilder()
+      .uri(URI.create("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"));
+    builder.header("Authorization", "Bearer TOKEN");
+    builder.header("X-Key", "KEY");
+    builder.header("Cookie", "sid=cookie");
+    HttpRequest request = builder.method("POST", HttpRequest.BodyPublishers.ofString("{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}")).build();
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+  }
+}"
+`;
+
+exports[`all > java/okhttp 1`] = `
+"import okhttp3.*;
+
+public class Example {
+  public static void main(String[] args) throws Exception {
+    OkHttpClient client = new OkHttpClient();
+    RequestBody body = RequestBody.create("{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}", MediaType.parse("multipart/form-data"));
+    Request.Builder builder = new Request.Builder().url("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y");
+    builder.addHeader("Authorization", "Bearer TOKEN");
+    builder.addHeader("X-Key", "KEY");
+    builder.addHeader("Cookie", "sid=cookie");
+    builder.method("POST", body);
+    try (Response response = client.newCall(builder.build()).execute()) {
+      System.out.println(response.body().string());
+    }
+  }
+}"
+`;
+
+exports[`all > java/unirest 1`] = `
+"import kong.unirest.*;
+
+public class Example {
+  public static void main(String[] args) {
+    HttpRequest<?> request = Unirest.request("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+NaN
+NaN;
+    HttpResponse<String> response = request.asString();
+    System.out.println(response.getBody());
+  }
+}"
+`;
+
+exports[`all > javascript/axios 1`] = `
+"import axios from "axios";
+const formData = new FormData();
+formData.append("file", new File([], "file.bin"));
+formData.append("name", "Ada");
+async function post_upload_by_id() {
+  const response = await axios({
+    method: "post",
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    headers: {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+    data: formData,
+  });
+  console.log(response.data);
+}
+post_upload_by_id();"
+`;
+
+exports[`all > javascript/fetch 1`] = `
+"const formData = new FormData();
+formData.append("file", new File([], "file.bin", { type: "application/octet-stream" }));
+formData.append("name", "Ada");
+
+const url = "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y";
+const options = {
+  method: "POST",
+  headers: {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+  body: formData,
+};
+
+const response = await fetch(url, options);
+const data = await response.text();
+console.log(data);"
+`;
+
+exports[`all > javascript/jquery 1`] = `
+"import $ from "jquery";
+const formData = new FormData();
+formData.append("file", new File([], "file.bin"));
+formData.append("name", "Ada");
+async function post_upload_by_id() {
+  const response = await axios({
+    method: "post",
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    headers: {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+    data: formData,
+  });
+  console.log(response.data);
+}
+post_upload_by_id();"
+`;
+
+exports[`all > javascript/ofetch 1`] = `
+"import { $fetch } from "ofetch";
+const formData = new FormData();
+formData.append("file", new File([], "file.bin"));
+formData.append("name", "Ada");
+async function post_upload_by_id() {
+  const response = await axios({
+    method: "post",
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    headers: {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+    data: formData,
+  });
+  console.log(response.data);
+}
+post_upload_by_id();"
+`;
+
+exports[`all > javascript/xhr 1`] = `
+"const formData = new FormData();
+formData.append("file", new File([], "file.bin"));
+formData.append("name", "Ada");
+
+const xhr = new XMLHttpRequest();
+xhr.open("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y");
+xhr.setRequestHeader("Authorization", "Bearer TOKEN");
+xhr.setRequestHeader("X-Key", "KEY");
+xhr.setRequestHeader("Cookie", "sid=cookie");
+xhr.onload = function () { console.log(xhr.responseText); };
+xhr.send(formData);"
+`;
+
+exports[`all > kotlin/okhttp 1`] = `
+"import okhttp3.*
+
+fun main() {
+  val client = OkHttpClient()
+  val body = "multipart/form-data".toMediaType().let { mediaType -> "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}".toRequestBody(mediaType) }
+  val builder = Request.Builder().url("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+  builder.addHeader("Authorization", "Bearer TOKEN")
+  builder.addHeader("X-Key", "KEY")
+  builder.addHeader("Cookie", "sid=cookie")
+  builder.method("POST", body)
+  client.newCall(builder.build()).execute().use { response ->
+    println(response.body!!.string())
+  }
+}"
+`;
+
+exports[`all > node/axios 1`] = `
+"import axios from "axios";
+const formData = new FormData();
+formData.append("file", new File([], "file.bin"));
+formData.append("name", "Ada");
+async function post_upload_by_id() {
+  const response = await axios({
+    method: "post",
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    headers: {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+    data: formData,
+  });
+  console.log(response.data);
+}
+post_upload_by_id();"
+`;
+
+exports[`all > node/fetch 1`] = `
+"import fetch from "node-fetch";
+
+const formData = new FormData();
+formData.append("file", new File([], "file.bin", { type: "application/octet-stream" }));
+formData.append("name", "Ada");
+
+const url = "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y";
+const options = {
+  method: "POST",
+  headers: {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+  body: formData,
+};
+
+const response = await fetch(url, options);
+const data = await response.text();
+console.log(data);"
+`;
+
+exports[`all > node/ofetch 1`] = `
+"import { ofetch } from "ofetch";
+const formData = new FormData();
+formData.append("file", new File([], "file.bin"));
+formData.append("name", "Ada");
+async function post_upload_by_id() {
+  const response = await axios({
+    method: "post",
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    headers: {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+    data: formData,
+  });
+  console.log(response.data);
+}
+post_upload_by_id();"
+`;
+
+exports[`all > node/undici 1`] = `
+"import { request as undiciRequest } from "undici";
+const formData = new FormData();
+formData.append("file", new File([], "file.bin"));
+formData.append("name", "Ada");
+async function post_upload_by_id() {
+  const response = await axios({
+    method: "post",
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    headers: {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+    data: formData,
+  });
+  console.log(response.data);
+}
+post_upload_by_id();"
+`;
+
+exports[`all > objc/nsurlsession 1`] = `
+"@import Foundation;
+int main() {
+  @autoreleasepool {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"]];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"Bearer TOKEN" forHTTPHeaderField:@"Authorization"];
+    [request setValue:@"KEY" forHTTPHeaderField:@"X-Key"];
+    [request setValue:@"sid=cookie" forHTTPHeaderField:@"Cookie"];
+    request.HTTPBody = [@"{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}" dataUsingEncoding:NSUTF8StringEncoding];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+      if (error) { NSLog(@"%@", error); dispatch_semaphore_signal(semaphore); return; }
+      NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+      NSLog(@"%@", text);
+      dispatch_semaphore_signal(semaphore);
+    }] resume];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+  }
+  return 0;
+}"
+`;
+
+exports[`all > ocaml/cohttp 1`] = `
+"open Cohttp
+open Cohttp_lwt_unix
+open Lwt.Infix
+
+let () =
+  let uri = Uri.of_string "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y" in
+  let headers = Header.of_list [
+    ("Authorization", "Bearer TOKEN");
+    ("X-Key", "KEY");
+    ("Cookie", "sid=cookie");
+  ] in
+  let body = Cohttp_lwt.Body.of_string "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}" in
+  Lwt_main.run (
+    Client.call ~headers ~body \`POST\` uri >>= fun (_, body) ->
+    Cohttp_lwt.Body.to_string body >|= print_endline
+  )"
+`;
+
+exports[`all > php/curl 1`] = `
+"<?php
+$ch = curl_init();
+curl_setopt_array($ch, [
+  CURLOPT_URL => 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y',
+  CURLOPT_CUSTOMREQUEST => 'POST',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => [
+    'Authorization: Bearer TOKEN',
+    'X-Key: KEY',
+    'Cookie: sid=cookie',
+  ],
+  CURLOPT_POSTFIELDS => '{
+  "file": {
+    "__file": true,
+    "path": "/tmp/file.bin",
+    "name": "file.bin",
+    "contentType": "application/octet-stream"
+  },
+  "name": "Ada"
+}',
+]);
+$response = curl_exec($ch);
+echo $response;
+curl_close($ch);"
+`;
+
+exports[`all > php/guzzle 1`] = `
+"<?php
+use GuzzleHttp\\Client;
+$client = new Client();
+$response = $client->request('POST', 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y', [
+  'headers' => {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+},
+  'body' => '{
+  "file": {
+    "__file": true,
+    "path": "/tmp/file.bin",
+    "name": "file.bin",
+    "contentType": "application/octet-stream"
+  },
+  "name": "Ada"
+}',
+]);
+echo $response->getBody()->getContents();"
+`;
+
+exports[`all > php/laravel-http 1`] = `
+"<?php
+use Illuminate\\Support\\Facades\\Http;
+
+$response = Http::withHeaders({
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+})
+NaN->send('POST', 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y');
+echo $response->body();"
+`;
+
+exports[`all > powershell/invoke-restmethod 1`] = `
+"$headers = {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+}
+$response = Invoke-RestMethod -Method POST -Uri 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y' -Headers $headers -Body '{
+  "file": {
+    "__file": true,
+    "path": "/tmp/file.bin",
+    "name": "file.bin",
+    "contentType": "application/octet-stream"
+  },
+  "name": "Ada"
+}'
+$response | ConvertTo-Json -Depth 10"
+`;
+
+exports[`all > powershell/invoke-webrequest 1`] = `
+"$headers = {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+}
+$response = Invoke-WebRequest -Method POST -Uri 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y' -Headers $headers -Body '{
+  "file": {
+    "__file": true,
+    "path": "/tmp/file.bin",
+    "name": "file.bin",
+    "contentType": "application/octet-stream"
+  },
+  "name": "Ada"
+}'
+$response.Content"
+`;
+
+exports[`all > python/aiohttp 1`] = `
+"import aiohttp
+
+files = {
+  "file": open("/tmp/file.bin", "rb"),
+}
+data = {
+  "name": "Ada"
+}
+response = aiohttp.request("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", headers={
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+}, data=data, files=files, timeout=30)
+print(response.text)"
+`;
+
+exports[`all > python/http-client 1`] = `
+"import http.client
+import urllib.parse
+
+parsed = urllib.parse.urlsplit("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+connection = http.client.HTTPSConnection(parsed.hostname, parsed.port or 443, timeout=30)
+path = parsed.path + (("?" + parsed.query) if parsed.query else "")
+headers = {
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+}
+body = "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}"
+connection.request("POST", path, body=body, headers=headers)
+response = connection.getresponse()
+print(response.read().decode("utf-8"))"
+`;
+
+exports[`all > python/httpx-async 1`] = `
+"import httpx
+
+files = {
+  "file": open("/tmp/file.bin", "rb"),
+}
+data = {
+  "name": "Ada"
+}
+response = httpx.request("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", headers={
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+}, data=data, files=files, timeout=30)
+print(response.text)"
+`;
+
+exports[`all > python/httpx-sync 1`] = `
+"import httpx
+
+files = {
+  "file": open("/tmp/file.bin", "rb"),
+}
+data = {
+  "name": "Ada"
+}
+response = httpx.request("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", headers={
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+}, data=data, files=files, timeout=30)
+print(response.text)"
+`;
+
+exports[`all > python/requests 1`] = `
+"import requests
+
+files = {
+  "file": open("/tmp/file.bin", "rb"),
+}
+data = {
+  "name": "Ada"
+}
+response = requests.request("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", headers={
+  "Authorization": "Bearer TOKEN",
+  "X-Key": "KEY",
+  "Cookie": "sid=cookie"
+}, data=data, files=files, timeout=30)
+print(response.text)"
+`;
+
+exports[`all > r/httr2 1`] = `
+"library(httr2)
+request <- request("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y") |>
+  req_method("POST")
+request <- request |> req_headers(Authorization = "Bearer TOKEN")
+request <- request |> req_headers(X-Key = "KEY")
+request <- request |> req_headers(Cookie = "sid=cookie")
+request <- request |> req_body_raw("{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}")
+response <- request |> req_perform()
+resp_body_string(response)"
+`;
+
+exports[`all > ruby/net-http 1`] = `
+"require "uri"
+require "net/http"
+require "json"
+uri = URI('https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y')
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = uri.scheme == "https"
+request = Net::HTTP::Post.new(uri)
+request['Authorization'] = 'Bearer TOKEN'
+request['X-Key'] = 'KEY'
+request['Cookie'] = 'sid=cookie'
+request.body = %Q{{
+  "file": {
+    "__file": true,
+    "path": "/tmp/file.bin",
+    "name": "file.bin",
+    "contentType": "application/octet-stream"
+  \\},
+  "name": "Ada"
+\\}}
+response = http.request(request)
+puts response.body"
+`;
+
+exports[`all > rust/reqwest 1`] = `
+"use reqwest::blocking::Client;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::new();
+    let response = client
+        .request(reqwest::Method::POST, "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y").header("Authorization", "Bearer TOKEN").header("X-Key", "KEY").header("Cookie", "sid=cookie").body("{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}")
+        .send()?;
+    println!("{}", response.text()?);
+    Ok(())
+}"
+`;
+
+exports[`all > shell/curl 1`] = `
+"curl --request POST \\
+  --url 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y' \\
+  --header 'Authorization: Bearer TOKEN' \\
+  --header 'X-Key: KEY' \\
+  --header 'Cookie: sid=cookie' \\
+  --form 'file=@/tmp/file.bin' \\
+  --form 'name=Ada' \\"
+`;
+
+exports[`all > shell/httpie 1`] = `"http POST 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y' 'Authorization:Bearer TOKEN' 'X-Key:KEY' 'Cookie:sid=cookie' 'file@/tmp/file.bin' 'name=Ada'"`;
+
+exports[`all > shell/wget 1`] = `
+"wget \\
+  --method=POST \\
+  --header='Authorization: Bearer TOKEN' \\
+  --header='X-Key: KEY' \\
+  --header='Cookie: sid=cookie' \\
+  'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y'"
+`;
+
+exports[`all > swift/nsurlsession 1`] = `
+"import Foundation
+var request = URLRequest(url: URL(string: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")!)
+request.httpMethod = "POST"
+request.setValue("Bearer TOKEN", forHTTPHeaderField: "Authorization")
+request.setValue("KEY", forHTTPHeaderField: "X-Key")
+request.setValue("sid=cookie", forHTTPHeaderField: "Cookie")
+request.httpBody = "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"path\\": \\"/tmp/file.bin\\",\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}".data(using: .utf8)
+URLSession.shared.dataTask(with: request) { data, _, error in
+  if let error = error {
+    print(error)
+    return
+  }
+  if let data = data, let text = String(data: data, encoding: .utf8) {
+    print(text)
+  }
+}.resume()"
+`;
+
+exports[`all generators > c/libcurl 1`] = `
+"#include <curl/curl.h>
+#include <stdio.h>
+
+/* Requires libcurl development headers and library. */
+/* Build: cc example.c -o example $(pkg-config --cflags --libs libcurl) */
+/* Proxy and TLS trust settings may be read from the environment. */
+/* TODO: replace /tmp/file.bin with the real local file path for multipart field file */
+
+int main(void) {
+  int exit_code = 0;
+  CURLcode result;
+  long status = 0;
+  struct curl_slist *headers = NULL;
+  curl_mime *mime = NULL;
+
+  if (curl_global_init(CURL_GLOBAL_DEFAULT) != CURLE_OK) {
+    fprintf(stderr, "Failed to initialize libcurl\\n");
+    return 1;
+  }
+
+  CURL *curl = curl_easy_init();
+  if (!curl) {
+    fprintf(stderr, "Failed to create libcurl handle\\n");
+    curl_global_cleanup();
+    return 1;
+  }
+
+  mime = curl_mime_init(curl);
+  if (!mime) {
+    fprintf(stderr, "Failed to create multipart body\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+
+  curl_easy_setopt(curl, CURLOPT_URL, "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y");
+  curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 30L);
+  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
+  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fwrite);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, stdout);
+
+  headers = curl_slist_append(headers, "Authorization: Bearer TOKEN");
+  if (!headers) {
+    fprintf(stderr, "Failed to allocate request headers\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+  headers = curl_slist_append(headers, "X-Key: KEY");
+  if (!headers) {
+    fprintf(stderr, "Failed to allocate request headers\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+  headers = curl_slist_append(headers, "Cookie: sid=cookie");
+  if (!headers) {
+    fprintf(stderr, "Failed to allocate request headers\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+
+  curl_mimepart *part0 = curl_mime_addpart(mime);
+  if (!part0) {
+    fprintf(stderr, "Failed to allocate multipart field\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+  if (curl_mime_name(part0, "file") != CURLE_OK) {
+    fprintf(stderr, "Failed to set multipart field name\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+  if (curl_mime_filedata(part0, "/tmp/file.bin") != CURLE_OK ||
+      curl_mime_filename(part0, "file.bin") != CURLE_OK ||
+      curl_mime_type(part0, "application/octet-stream") != CURLE_OK) {
+    fprintf(stderr, "Failed to configure multipart file\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+  curl_mimepart *part1 = curl_mime_addpart(mime);
+  if (!part1) {
+    fprintf(stderr, "Failed to allocate multipart field\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+  if (curl_mime_name(part1, "name") != CURLE_OK) {
+    fprintf(stderr, "Failed to set multipart field name\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+  if (curl_mime_data(part1, "Ada", CURL_ZERO_TERMINATED) != CURLE_OK) {
+    fprintf(stderr, "Failed to configure multipart field\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+
+  curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);
+  if (headers) {
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+  }
+
+  result = curl_easy_perform(curl);
+  if (result != CURLE_OK) {
+    fprintf(stderr, "Request failed: %s\\n", curl_easy_strerror(result));
+    exit_code = 1;
+    goto cleanup;
+  }
+
+  if (curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status) != CURLE_OK) {
+    fprintf(stderr, "Failed to read HTTP status\\n");
+    exit_code = 1;
+    goto cleanup;
+  }
+
+  if (status < 200 || status >= 300) {
+    fprintf(stderr, "\\nHTTP request failed with status %ld\\n", status);
+    exit_code = 1;
+  }
+
+cleanup:
+  curl_mime_free(mime);
+  curl_slist_free_all(headers);
+  curl_easy_cleanup(curl);
+  curl_global_cleanup();
+  return exit_code;
+}"
+`;
+
+exports[`all generators > clojure/clj-http 1`] = `
+";; Requires Clojure 1.11+ and clj-http 3.13.0.
+;; Run with clj-http on the classpath.
+(require '[clj-http.client :as client])
+
+(let [response
+      (try
+        (client/request
+          {:method
+           (keyword "post")
+           :url "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"
+           :headers
+           {
+    "Authorization" "Bearer TOKEN"
+    "X-Key" "KEY"
+    "Cookie" "sid=cookie"
+    "Content-Type" "multipart/form-data"
+           }
+           :body "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\",\\n    \\"data\\": \\"\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}"
+           :socket-timeout 30000
+           :connection-timeout 30000
+           :throw-exceptions false
+           :as :text})
+        (catch Exception exception
+          (binding [*out* *err*]
+            (println "Request failed:" (.getMessage exception)))
+          (System/exit 1)))]
+  (if (<= 200 (:status response) 299)
+    (print (or (:body response) ""))
+    (do
+      (binding [*out* *err*]
+        (println (str "HTTP "
+                      (:status response)
+                      ": "
+                      (or (:body response) ""))))
+      (System/exit 1))))"
+`;
+
+exports[`all generators > csharp/httpclient 1`] = `
+"using System;
+using System.Threading;
+using System.Threading.Tasks;
+using RestSharp;
+
+// Requires .NET 8 and RestSharp 112.x.
+// Add the dependency with: dotnet add package RestSharp
+// Run with: dotnet run
+internal static class Program
+{
+    private static async Task<int> Main()
+    {
+        var options = new RestClientOptions
+        {
+            BaseUrl = new Uri(@"https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"),
+            MaxTimeout = 30_000
+        };
+
+        using var client = new RestClient(options);
+        var requestMessage = new RestRequest(
+            resource: "",
+            method: new Method(@"POST")
+        );
+
+        requestMessage.AddHeader(@"Authorization", @"Bearer TOKEN");
+        requestMessage.AddHeader(@"X-Key", @"KEY");
+        requestMessage.AddHeader(@"Cookie", @"sid=cookie");
+
+        // TODO: replace /tmp/file.bin with the real local file path for multipart field file
+        requestMessage.AddFile(
+            @"file",
+            @"/tmp/file.bin",
+            @"application/octet-stream",
+            @"file.bin"
+        );
+        requestMessage.AddParameter(
+            @"name",
+            @"Ada"
+        );
+
+        using var cancellation =
+            new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+        try
+        {
+            var response = await client.ExecuteAsync(
+                requestMessage,
+                cancellation.Token
+            );
+            var responseText = response.Content ?? string.Empty;
+
+            if (!response.IsSuccessful)
+            {
+                Console.Error.WriteLine(
+                    $"HTTP {(int)response.StatusCode} " +
+                    $"{response.StatusDescription}: {responseText}"
+                );
+                return 1;
+            }
+
+            Console.Write(responseText);
+            return 0;
+        }
+        catch (OperationCanceledException exception)
+        {
+            Console.Error.WriteLine($"Request timed out: {exception.Message}");
+            return 1;
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine($"Request failed: {exception.Message}");
+            return 1;
+        }
+    }
+}"
+`;
+
+exports[`all generators > csharp/restsharp 1`] = `
+"using System;
+using System.Threading;
+using System.Threading.Tasks;
+using RestSharp;
+
+// Requires .NET 8 and RestSharp 112.x.
+// Add the dependency with: dotnet add package RestSharp
+// Run with: dotnet run
+internal static class Program
+{
+    private static async Task<int> Main()
+    {
+        var options = new RestClientOptions
+        {
+            BaseUrl = new Uri(@"https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"),
+            MaxTimeout = 30_000
+        };
+
+        using var client = new RestClient(options);
+        var requestMessage = new RestRequest(
+            resource: "",
+            method: new Method(@"POST")
+        );
+
+        requestMessage.AddHeader(@"Authorization", @"Bearer TOKEN");
+        requestMessage.AddHeader(@"X-Key", @"KEY");
+        requestMessage.AddHeader(@"Cookie", @"sid=cookie");
+
+        // TODO: replace /tmp/file.bin with the real local file path for multipart field file
+        requestMessage.AddFile(
+            @"file",
+            @"/tmp/file.bin",
+            @"application/octet-stream",
+            @"file.bin"
+        );
+        requestMessage.AddParameter(
+            @"name",
+            @"Ada"
+        );
+
+        using var cancellation =
+            new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+        try
+        {
+            var response = await client.ExecuteAsync(
+                requestMessage,
+                cancellation.Token
+            );
+            var responseText = response.Content ?? string.Empty;
+
+            if (!response.IsSuccessful)
+            {
+                Console.Error.WriteLine(
+                    $"HTTP {(int)response.StatusCode} " +
+                    $"{response.StatusDescription}: {responseText}"
+                );
+                return 1;
+            }
+
+            Console.Write(responseText);
+            return 0;
+        }
+        catch (OperationCanceledException exception)
+        {
+            Console.Error.WriteLine($"Request timed out: {exception.Message}");
+            return 1;
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine($"Request failed: {exception.Message}");
+            return 1;
+        }
+    }
+}"
+`;
+
+exports[`all generators > dart/http 1`] = `
+"import 'dart:async';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
+
+// Requires Dart 3 and package:http.
+// Add the dependency with: dart pub add http
+// Run with: dart run
+Future<void> main() async {
+  final client = http.Client();
+
+  try {
+    final request = http.Request("POST", Uri.parse("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"));
+    request.headers.add("Authorization", "Bearer TOKEN");
+    request.headers.add("X-Key", "KEY");
+    request.headers.add("Cookie", "sid=cookie");
+    request.headers["Content-Type"] = "multipart/form-data";
+    request.body = "{\\n  \\"file\\": {\\n    \\"__file\\": true,\\n    \\"name\\": \\"file.bin\\",\\n    \\"contentType\\": \\"application/octet-stream\\",\\n    \\"data\\": \\"\\"\\n  },\\n  \\"name\\": \\"Ada\\"\\n}";
+
+    final streamedResponse = await client
+        .send(request)
+        .timeout(const Duration(seconds: 30));
+    final responseText = await streamedResponse.stream
+        .bytesToString()
+        .timeout(const Duration(seconds: 30));
+
+    if (streamedResponse.statusCode < 200 ||
+        streamedResponse.statusCode >= 300) {
+      stderr.writeln(
+        'HTTP \${streamedResponse.statusCode} '
+        '\${streamedResponse.reasonPhrase ?? ''}: $responseText',
+      );
+      exitCode = 1;
+      return;
+    }
+
+    stdout.write(responseText);
+  } on TimeoutException catch (exception) {
+    stderr.writeln('Request timed out: $exception');
+    exitCode = 1;
+  } on Object catch (exception, stackTrace) {
+    stderr.writeln('Request failed: $exception');
+    stderr.writeln(stackTrace);
+    exitCode = 1;
+  } finally {
+    client.close();
+  }
+}"
+`;
+
+exports[`all generators > fsharp/httpclient 1`] = `
+"open System
+open System.IO
+open System.Net.Http
+open System.Net.Http.Headers
+open System.Text
+
+// Requires .NET 8 SDK or later.
+// Run with: dotnet run
+// Standard HTTP proxy environment variables are honored.
+[<EntryPoint>]
+let main _ =
+    use client = new HttpClient()
+    client.Timeout <- TimeSpan.FromSeconds(30.0)
+
+    use request =
+        new HttpRequestMessage(
+            new HttpMethod("POST"),
+            "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"
+        )
+
+    use multipart = new MultipartFormDataContent()
+    // TODO: replace /tmp/file.bin with the real local file path for multipart field file
+    let fileStream0 = File.OpenRead("/tmp/file.bin")
+    let fileContent0 = new StreamContent(fileStream0)
+    fileContent0.Headers.ContentType <-
+        MediaTypeHeaderValue.Parse("application/octet-stream")
+    multipart.Add(
+        fileContent0,
+        "file",
+        "file.bin"
+    )
+    let fieldContent1 =
+        new StringContent("Ada")
+    multipart.Add(fieldContent1, "name")
+
+    request.Content <- multipart
+
+    let headerAdded0 =
+        if isNull request.Content then
+            request.Headers.TryAddWithoutValidation(
+                "Authorization",
+                "Bearer TOKEN"
+            )
+        else
+            request.Headers.TryAddWithoutValidation(
+                "Authorization",
+                "Bearer TOKEN"
+            )
+            || request.Content.Headers.TryAddWithoutValidation(
+                "Authorization",
+                "Bearer TOKEN"
+            )
+    if not headerAdded0 then
+        eprintfn "Ignored invalid header: Authorization"
+    let headerAdded1 =
+        if isNull request.Content then
+            request.Headers.TryAddWithoutValidation(
+                "X-Key",
+                "KEY"
+            )
+        else
+            request.Headers.TryAddWithoutValidation(
+                "X-Key",
+                "KEY"
+            )
+            || request.Content.Headers.TryAddWithoutValidation(
+                "X-Key",
+                "KEY"
+            )
+    if not headerAdded1 then
+        eprintfn "Ignored invalid header: X-Key"
+    let headerAdded2 =
+        if isNull request.Content then
+            request.Headers.TryAddWithoutValidation(
+                "Cookie",
+                "sid=cookie"
+            )
+        else
+            request.Headers.TryAddWithoutValidation(
+                "Cookie",
+                "sid=cookie"
+            )
+            || request.Content.Headers.TryAddWithoutValidation(
+                "Cookie",
+                "sid=cookie"
+            )
+    if not headerAdded2 then
+        eprintfn "Ignored invalid header: Cookie"
+
+    try
+        use response = client.Send(request)
+        let responseText = response.Content.ReadAsStringAsync().Result
+
+        if not response.IsSuccessStatusCode then
+            eprintfn
+                "HTTP %d %s: %s"
+                (int response.StatusCode)
+                response.ReasonPhrase
+                responseText
+            1
+        else
+            printfn "%s" responseText
+            0
+    with exception ->
+        eprintfn "Request failed: %s" exception.Message
+        1
+    finally
+        fileContent0.Dispose()
+        fileStream0.Dispose()"
+`;
+
+exports[`all generators > go/new-request 1`] = `
+"package main
+
+// Requires Go 1.22 or later.
+// Run with: go run .
+// Standard HTTP proxy environment variables are honored.
+import (
+  "bytes"
+  "context"
+  "fmt"
+  "io"
+  "mime"
+  "mime/multipart"
+  "net/http"
+  "net/textproto"
+  "os"
+  "time"
+)
+
+func main() {
+  ctx, cancel := context.WithTimeout(
+    context.Background(),
+    30*time.Second,
+  )
+  defer cancel()
+
+  var bodyBuffer bytes.Buffer
+  multipartWriter := multipart.NewWriter(&bodyBuffer)
+  // TODO: replace /tmp/file.bin with the real local file path for multipart field file
+  uploadFile0, err := os.Open("/tmp/file.bin")
+  if err != nil {
+    fmt.Fprintf(os.Stderr, "open multipart file file: %v\\n", err)
+    os.Exit(1)
+  }
+
+  fileHeader0 := make(textproto.MIMEHeader)
+  fileHeader0.Set(
+    "Content-Disposition",
+    mime.FormatMediaType(
+      "form-data",
+      map[string]string{
+        "name": "file",
+        "filename": "file.bin",
+      },
+    ),
+  )
+  fileHeader0.Set("Content-Type", "application/octet-stream")
+  filePart0, err := multipartWriter.CreatePart(fileHeader0)
+  if err != nil {
+    _ = uploadFile0.Close()
+    fmt.Fprintf(os.Stderr, "create multipart file part file: %v\\n", err)
+    os.Exit(1)
+  }
+  if _, err := io.Copy(filePart0, uploadFile0); err != nil {
+    _ = uploadFile0.Close()
+    fmt.Fprintf(os.Stderr, "copy multipart file file: %v\\n", err)
+    os.Exit(1)
+  }
+  if err := uploadFile0.Close(); err != nil {
+    fmt.Fprintf(os.Stderr, "close multipart file file: %v\\n", err)
+    os.Exit(1)
+  }
+  if err := multipartWriter.WriteField(
+    "name",
+    "Ada",
+  ); err != nil {
+    fmt.Fprintf(os.Stderr, "write multipart field name: %v\\n", err)
+    os.Exit(1)
+  }
+  if err := multipartWriter.Close(); err != nil {
+    fmt.Fprintf(os.Stderr, "close multipart writer: %v\\n", err)
+    os.Exit(1)
+  }
+
+  req, err := http.NewRequestWithContext(
+    ctx,
+    "POST",
+    "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    &bodyBuffer,
+  )
+  if err != nil {
+    fmt.Fprintf(os.Stderr, "create request: %v\\n", err)
+    os.Exit(1)
+  }
+  req.Header.Add("Authorization", "Bearer TOKEN")
+  req.Header.Add("X-Key", "KEY")
+  req.Header.Add("Cookie", "sid=cookie")
+  req.Header.Set("Content-Type", multipartWriter.FormDataContentType())
+
+  client := &http.Client{
+    Timeout: 30 * time.Second,
+  }
+
+  resp, err := client.Do(req)
+  if err != nil {
+    fmt.Fprintf(os.Stderr, "perform request: %v\\n", err)
+    os.Exit(1)
+  }
+
+  responseBody, readErr := io.ReadAll(resp.Body)
+  closeErr := resp.Body.Close()
+  if readErr != nil {
+    fmt.Fprintf(os.Stderr, "read response body: %v\\n", readErr)
+    os.Exit(1)
+  }
+  if closeErr != nil {
+    fmt.Fprintf(os.Stderr, "close response body: %v\\n", closeErr)
+    os.Exit(1)
+  }
+
+  if resp.StatusCode < http.StatusOK ||
+    resp.StatusCode >= http.StatusMultipleChoices {
+    fmt.Fprintf(os.Stderr, "HTTP %s: %s\\n",
+      resp.Status,
+      string(responseBody),
+    )
+    os.Exit(1)
+  }
+
+  fmt.Println(string(responseBody))
+}"
+`;
+
+exports[`all generators > http/http1 1`] = `
+"POST https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y HTTP/1.1
+Authorization: Bearer TOKEN
+X-Key: KEY
+Cookie: sid=cookie
+
+{
+  "file": {
+    "__file": true,
+    "name": "file.bin",
+    "contentType": "application/octet-stream",
+    "data": ""
+  },
+  "name": "Ada"
+}"
+`;
+
+exports[`all generators > java/asynchttp 1`] = `
+"// Requires JDK 17+ and AsyncHttpClient 3.0.1.
+// Dependency: org.asynchttpclient:async-http-client:3.0.1
+// Compile: javac -cp 'lib/*' Example.java
+// Run: java -cp '.:lib/*' Example
+// Repeated request headers and multipart fields are added separately.
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+import java.io.File;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.BoundRequestBuilder;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.asynchttpclient.Response;
+import org.asynchttpclient.request.body.multipart.FilePart;
+import org.asynchttpclient.request.body.multipart.StringPart;
+import static org.asynchttpclient.Dsl.asyncHttpClient;
+
+public final class Example {
+  private Example() {}
+
+  public static void main(String[] args) throws Exception {
+    DefaultAsyncHttpClientConfig config =
+      new DefaultAsyncHttpClientConfig.Builder()
+        .setConnectTimeout(Duration.ofSeconds(30))
+        .setReadTimeout(Duration.ofSeconds(30))
+        .setRequestTimeout(Duration.ofSeconds(30))
+        .build();
+
+    try (AsyncHttpClient client = asyncHttpClient(config)) {
+      BoundRequestBuilder builder = client.prepare(
+        "POST",
+        "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"
+      );
+      builder.addHeader("Authorization", "Bearer TOKEN");
+      builder.addHeader("X-Key", "KEY");
+      builder.addHeader("Cookie", "sid=cookie");
+
+      builder.addBodyPart(new FilePart(
+        "file",
+        new File("/tmp/file.bin"),
+        "application/octet-stream",
+        null,
+        "file.bin"
+      ));
+      builder.addBodyPart(new StringPart(
+        "name",
+        "Ada"
+      ));
+
+      Response response = builder
+        .execute()
+        .get(30, TimeUnit.SECONDS);
+      String responseBody = response.getResponseBody();
+
+      if (response.getStatusCode() < 200 ||
+          response.getStatusCode() >= 300) {
+        throw new IllegalStateException(
+          "HTTP " + response.getStatusCode() + " "
+            + response.getStatusText() + ": " + responseBody
+        );
+      }
+
+      System.out.println(responseBody);
+    }
+  }
+}"
+`;
+
+exports[`all generators > java/java-net-http 1`] = `
+"// Requires JDK 17+; no external dependencies.
+// Compile: javac Example.java
+// Run: java Example
+// Repeated request headers and multipart fields are emitted separately.
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+import java.io.ByteArrayOutputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.UUID;
+
+public final class Example {
+  private Example() {}
+
+  public static void main(String[] args) throws Exception {
+    HttpClient client = HttpClient.newBuilder()
+      .connectTimeout(Duration.ofSeconds(30))
+      .followRedirects(HttpClient.Redirect.NORMAL)
+      .build();
+
+    String boundary = "----JavaBoundary" + UUID.randomUUID();
+    ByteArrayOutputStream multipartBody =
+      new ByteArrayOutputStream();
+    multipartBody.write(
+      ("--" + boundary + "\\r\\n")
+        .getBytes(StandardCharsets.UTF_8)
+    );
+    Path filePath1 = Path.of("/tmp/file.bin");
+    multipartBody.write(
+      "Content-Disposition: form-data; name=\\"file\\"; filename=\\"file.bin\\"\\r\\n".getBytes(StandardCharsets.UTF_8)
+    );
+    multipartBody.write(
+      "Content-Type: application/octet-stream\\r\\n\\r\\n".getBytes(StandardCharsets.UTF_8)
+    );
+    Files.copy(filePath1, multipartBody);
+    multipartBody.write(
+      "\\r\\n".getBytes(StandardCharsets.UTF_8)
+    );
+    multipartBody.write(
+      ("--" + boundary + "\\r\\n")
+        .getBytes(StandardCharsets.UTF_8)
+    );
+    multipartBody.write(
+      "Content-Disposition: form-data; name=\\"name\\"\\r\\n\\r\\n".getBytes(StandardCharsets.UTF_8)
+    );
+    multipartBody.write(
+      "Ada".getBytes(StandardCharsets.UTF_8)
+    );
+    multipartBody.write(
+      "\\r\\n".getBytes(StandardCharsets.UTF_8)
+    );
+    multipartBody.write(
+      ("--" + boundary + "--\\r\\n")
+        .getBytes(StandardCharsets.UTF_8)
+    );
+
+    HttpRequest httpRequest = HttpRequest.newBuilder()
+      .uri(URI.create("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"))
+      .timeout(Duration.ofSeconds(30))
+      .header("Authorization", "Bearer TOKEN")
+      .header("X-Key", "KEY")
+      .header("Cookie", "sid=cookie")
+      .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+      .method("POST", HttpRequest.BodyPublishers.ofByteArray(multipartBody.toByteArray()))
+      .build();
+
+    HttpResponse<String> response = client.send(
+      httpRequest,
+      HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)
+    );
+
+    String responseBody = response.body();
+    if (response.statusCode() < 200 ||
+        response.statusCode() >= 300) {
+      throw new IllegalStateException(
+        "HTTP " + response.statusCode() + ": " + responseBody
+      );
+    }
+
+    System.out.println(responseBody);
+  }
+}"
+`;
+
+exports[`all generators > java/okhttp 1`] = `
+"// Requires JDK 17+ and OkHttp 4.12.0.
+// Dependency: com.squareup.okhttp3:okhttp:4.12.0
+// Compile: javac -cp 'lib/*' Example.java
+// Run: java -cp '.:lib/*' Example
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+public final class Example {
+  private Example() {}
+
+  public static void main(String[] args) {
+    OkHttpClient client = new OkHttpClient.Builder()
+      .connectTimeout(Duration.ofSeconds(30))
+      .readTimeout(Duration.ofSeconds(30))
+      .writeTimeout(Duration.ofSeconds(30))
+      .callTimeout(Duration.ofSeconds(30))
+      .build();
+
+    RequestBody body = new MultipartBody.Builder()
+      .setType(MultipartBody.FORM)
+      .addFormDataPart(
+        "file",
+        "file.bin",
+        RequestBody.create(
+          new File("/tmp/file.bin"),
+          MediaType.get("application/octet-stream")
+        )
+      )
+      .addFormDataPart(
+        "name",
+        "Ada"
+      )
+      .build();
+
+    Request httpRequest = new Request.Builder()
+      .url("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+      .addHeader("Authorization", "Bearer TOKEN")
+      .addHeader("X-Key", "KEY")
+      .addHeader("Cookie", "sid=cookie")
+      .method("POST", body)
+      .build();
+
+    try (Response response =
+        client.newCall(httpRequest).execute()) {
+      String responseText = response.body() == null
+        ? ""
+        : response.body().string();
+
+      if (!response.isSuccessful()) {
+        throw new IOException(
+          "HTTP " + response.code() + " " + response.message()
+            + ": " + responseText
+        );
+      }
+
+      System.out.println(responseText);
+    } catch (IOException exception) {
+      exception.printStackTrace();
+      System.exit(1);
+    } finally {
+      client.dispatcher().executorService().shutdown();
+      client.connectionPool().evictAll();
+      if (client.cache() != null) {
+        try {
+          client.cache().close();
+        } catch (IOException exception) {
+          exception.printStackTrace();
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`all generators > java/unirest 1`] = `
+"import java.io.File;
+import kong.unirest.HttpRequest;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+
+// Requires JDK 17+ and com.konghq:unirest-java:3.14.5.
+// Compile and run with the Unirest dependency and its transitive dependencies on the classpath.
+// Proxy and TLS behavior can be configured through Unirest.config() when required.
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+public final class Example {
+  private Example() {}
+
+  public static void main(String[] args) {
+    int exitCode = 0;
+
+    try {
+      Unirest.config()
+        .connectTimeout(30_000)
+        .requestTimeout(30_000);
+
+      HttpRequest<?> httpRequest =
+        Unirest.request("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+        .header("Authorization", "Bearer TOKEN")
+        .header("X-Key", "KEY")
+        .header("Cookie", "sid=cookie")
+        .field(
+        "file",
+        new File("/tmp/file.bin")
+      )
+        .field(
+        "name",
+        "Ada"
+      );
+
+      HttpResponse<String> response = httpRequest.asString();
+      String responseText = response.getBody() == null
+        ? ""
+        : response.getBody();
+
+      if (!response.isSuccess()) {
+        System.err.println(
+          "HTTP " + response.getStatus() + " "
+            + response.getStatusText() + ": " + responseText
+        );
+        exitCode = 1;
+      } else {
+        System.out.println(responseText);
+      }
+    } catch (RuntimeException exception) {
+      exception.printStackTrace();
+      exitCode = 1;
+    } finally {
+      Unirest.shutDown();
+    }
+
+    if (exitCode != 0) {
+      System.exit(exitCode);
+    }
+  }
+}"
+`;
+
+exports[`all generators > javascript/axios 1`] = `
+"// Requires a modern browser with File, FormData, Headers, and AbortController.
+// Requires TypeScript 5.2+ and Axios 1.7.x.
+// Install: npm install axios@^1.7
+// Compile: npx tsc --target ES2022 --module ES2022 --moduleResolution bundler --lib ES2022,DOM main.ts
+// Axios/browser header handling may combine repeated header values.
+// Browser code cannot read local filesystem paths; pass each multipart file as a File argument.
+
+import axios, { AxiosError } from "axios";
+
+export async function post_upload_by_id(
+  file1: File
+): Promise<void> {
+  const formData = new FormData();
+  formData.append("file", file1);
+  formData.append("name", "Ada");
+
+  const headers = new Headers();
+  headers.append("Authorization", "Bearer TOKEN");
+  headers.append("X-Key", "KEY");
+
+  const response = await axios.request<string>({
+    method: "POST",
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    headers,
+    data: formData,
+    timeout: 30_000,
+    responseType: "text",
+    transformResponse: [(value: string) => value],
+    validateStatus: () => true,
+  });
+
+  const responseText =
+    typeof response.data === "string"
+      ? response.data
+      : String(response.data ?? "");
+
+  if (response.status < 200 || response.status >= 300) {
+    throw new Error(
+      \`HTTP \${response.status} \${response.statusText}: \${responseText}\`,
+    );
+  }
+
+  console.log(responseText);
+}
+
+// Call the exported function with browser File objects:
+// post_upload_by_id(file1).catch(console.error);"
+`;
+
+exports[`all generators > javascript/fetch 1`] = `
+"// Requires a modern browser with Fetch, FormData, File, Headers, and AbortController.
+// Requires TypeScript 5.2+.
+// Compile: npx tsc main.ts --target ES2022 --module ES2022 --lib ES2022,DOM --strict
+// Fetch may combine repeated header values according to the browser header model.
+// Multipart files must be supplied as browser File arguments; local paths are inaccessible.
+
+export async function sendRequest(
+  file1: File
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file1);
+  formData.append("name", "Ada");
+
+  const headers = new Headers();
+  headers.append("Authorization", "Bearer TOKEN");
+  headers.append("X-Key", "KEY");
+
+  const controller = new AbortController();
+  const timeoutId = globalThis.setTimeout(
+    () => controller.abort(),
+    30_000,
+  );
+
+  try {
+    const response = await fetch("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", {
+      method: "POST",
+      headers,
+      body: formData,
+      signal: controller.signal,
+    });
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(
+        \`HTTP \${response.status} \${response.statusText}: \${responseText}\`,
+      );
+    }
+
+    return responseText;
+  } catch (error: unknown) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Request timed out after 30 seconds", {
+        cause: error,
+      });
+    }
+
+    throw error;
+  } finally {
+    globalThis.clearTimeout(timeoutId);
+  }
+}"
+`;
+
+exports[`all generators > javascript/jquery 1`] = `
+"// Requires a modern browser with FormData, File, and Headers.
+// Requires jQuery 3.7.1+.
+// Install: npm install jquery@^3.7.1
+// Browser and jQuery header handling may combine repeated header values.
+// Multipart files must be supplied as File arguments; browser code cannot read local paths.
+
+function sendRequest(file1) {
+  const formData = new FormData();
+  formData.append("file", file1);
+  formData.append("name", "Ada");
+
+  const headers = new Headers();
+  headers.append("Authorization", "Bearer TOKEN");
+  headers.append("X-Key", "KEY");
+
+  return $.ajax({
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    method: "POST",
+    headers: Object.fromEntries(headers.entries()),
+    timeout: 30_000,
+    data: formData,
+    processData: false,
+    contentType: false,
+    dataType: "text",
+  })
+    .then(function (responseText, _textStatus, jqXHR) {
+      if (jqXHR.status < 200 || jqXHR.status >= 300) {
+        throw new Error(
+          \`HTTP \${jqXHR.status} \${jqXHR.statusText}: \${responseText}\`,
+        );
+      }
+
+      console.log(responseText);
+      return responseText;
+    })
+    .catch(function (jqXHR) {
+      if (jqXHR && typeof jqXHR.status === "number") {
+        const responseText =
+          typeof jqXHR.responseText === "string"
+            ? jqXHR.responseText
+            : "";
+        const statusText =
+          typeof jqXHR.statusText === "string"
+            ? jqXHR.statusText
+            : "";
+
+        throw new Error(
+          \`HTTP \${jqXHR.status} \${statusText}: \${responseText}\`,
+        );
+      }
+
+      throw jqXHR;
+    });
+}"
+`;
+
+exports[`all generators > javascript/ofetch 1`] = `
+"// Requires a modern browser with FormData, File, Headers, and AbortSignal.timeout().
+// Requires TypeScript 5.2+ and ofetch 1.4+.
+// Install: npm install ofetch@^1.4
+// Compile: npx tsc main.ts --target ES2022 --module ES2022 --moduleResolution bundler --lib ES2022,DOM --strict
+// Fetch may combine repeated headers according to its header model.
+// Multipart files must be supplied as File arguments; browsers cannot read local paths.
+
+import { ofetch } from "ofetch";
+
+export async function post_upload_by_id(
+  file1: File
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file1);
+  formData.append("name", "Ada");
+
+  const headers = new Headers();
+  headers.append("Authorization", "Bearer TOKEN");
+  headers.append("X-Key", "KEY");
+
+  try {
+    return await ofetch<string>(
+      "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+      {
+        method: "POST",
+        headers,
+        body: formData,
+        signal: AbortSignal.timeout(30_000),
+        responseType: "text",
+        retry: 0,
+      },
+    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(\`Request failed: \${error.message}\`, {
+        cause: error,
+      });
+    }
+
+    throw new Error("Request failed with an unknown error", {
+      cause: error,
+    });
+  }
+}"
+`;
+
+exports[`all generators > javascript/xhr 1`] = `
+"// Requires a modern browser with XMLHttpRequest, FormData, and File.
+// Requires TypeScript 5.2+.
+// Compile: npx tsc main.ts --target ES2022 --module ES2022 --lib ES2022,DOM --strict
+// Browsers may combine repeated request headers set through XMLHttpRequest.
+// Multipart files must be supplied as File arguments; browsers cannot read local paths.
+
+export function sendRequest(
+  file1: File
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const formData = new FormData();
+    formData.append("file", file1);
+    formData.append("name", "Ada");
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", true);
+    xhr.timeout = 30_000;
+    xhr.responseType = "text";
+
+    xhr.setRequestHeader("Authorization", "Bearer TOKEN");
+    xhr.setRequestHeader("X-Key", "KEY");
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.responseText);
+        return;
+      }
+
+      reject(
+        new Error(
+          \`HTTP \${xhr.status} \${xhr.statusText}: \${xhr.responseText}\`,
+        ),
+      );
+    };
+
+    xhr.onerror = () => {
+      reject(new Error("Network request failed"));
+    };
+
+    xhr.ontimeout = () => {
+      reject(new Error("Request timed out after 30 seconds"));
+    };
+
+    xhr.onabort = () => {
+      reject(new Error("Request aborted"));
+    };
+
+    xhr.send(formData);
+  });
+}"
+`;
+
+exports[`all generators > kotlin/okhttp 1`] = `
+"import java.io.File
+import java.time.Duration
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+
+// Requires JDK 17+, Kotlin 1.9+, and OkHttp 4.12.0.
+// Dependency: com.squareup.okhttp3:okhttp:4.12.0
+// Compile: kotlinc Main.kt -cp okhttp-4.12.0.jar:okio-jvm-3.6.0.jar -include-runtime -d main.jar
+// Run: java -cp main.jar:okhttp-4.12.0.jar:okio-jvm-3.6.0.jar MainKt
+// OkHttp addHeader() preserves repeated request-header values.
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+fun main() {
+  val client = OkHttpClient.Builder()
+    .connectTimeout(Duration.ofSeconds(30))
+    .readTimeout(Duration.ofSeconds(30))
+    .writeTimeout(Duration.ofSeconds(30))
+    .callTimeout(Duration.ofSeconds(30))
+    .build()
+
+  val body: RequestBody = MultipartBody.Builder()
+    .setType(MultipartBody.FORM)
+    .addFormDataPart(
+      "file",
+      "file.bin",
+      File("/tmp/file.bin").asRequestBody(
+        "application/octet-stream".toMediaType()
+      )
+    )
+    .addFormDataPart(
+      "name",
+      "Ada"
+    )
+    .build()
+
+  val httpRequest = Request.Builder()
+    .url("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+    .addHeader("Authorization", "Bearer TOKEN")
+    .addHeader("X-Key", "KEY")
+    .addHeader("Cookie", "sid=cookie")
+    .method("POST", body)
+    .build()
+
+  try {
+    client.newCall(httpRequest).execute().use { response ->
+      val responseText = response.body?.string().orEmpty()
+
+      if (!response.isSuccessful) {
+        throw IllegalStateException(
+          "HTTP \${response.code} \${response.message}: $responseText"
+        )
+      }
+
+      println(responseText)
+    }
+  } finally {
+    client.dispatcher.executorService.shutdown()
+    client.connectionPool.evictAll()
+    client.cache?.close()
+  }
+}"
+`;
+
+exports[`all generators > node/axios 1`] = `
+"// Requires a modern browser with File, FormData, Headers, and AbortController.
+// Requires TypeScript 5.2+ and Axios 1.7.x.
+// Install: npm install axios@^1.7
+// Compile: npx tsc --target ES2022 --module ES2022 --moduleResolution bundler --lib ES2022,DOM main.ts
+// Axios/browser header handling may combine repeated header values.
+// Browser code cannot read local filesystem paths; pass each multipart file as a File argument.
+
+import axios, { AxiosError } from "axios";
+
+export async function post_upload_by_id(
+  file1: File
+): Promise<void> {
+  const formData = new FormData();
+  formData.append("file", file1);
+  formData.append("name", "Ada");
+
+  const headers = new Headers();
+  headers.append("Authorization", "Bearer TOKEN");
+  headers.append("X-Key", "KEY");
+
+  const response = await axios.request<string>({
+    method: "POST",
+    url: "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+    headers,
+    data: formData,
+    timeout: 30_000,
+    responseType: "text",
+    transformResponse: [(value: string) => value],
+    validateStatus: () => true,
+  });
+
+  const responseText =
+    typeof response.data === "string"
+      ? response.data
+      : String(response.data ?? "");
+
+  if (response.status < 200 || response.status >= 300) {
+    throw new Error(
+      \`HTTP \${response.status} \${response.statusText}: \${responseText}\`,
+    );
+  }
+
+  console.log(responseText);
+}
+
+// Call the exported function with browser File objects:
+// post_upload_by_id(file1).catch(console.error);"
+`;
+
+exports[`all generators > node/fetch 1`] = `
+"import fetch from "node-fetch";
+
+// Requires a modern browser with Fetch, FormData, File, Headers, and AbortController.
+// Requires TypeScript 5.2+.
+// Compile: npx tsc main.ts --target ES2022 --module ES2022 --lib ES2022,DOM --strict
+// Fetch may combine repeated header values according to the browser header model.
+// Multipart files must be supplied as browser File arguments; local paths are inaccessible.
+
+export async function sendRequest(
+  file1: File
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file1);
+  formData.append("name", "Ada");
+
+  const headers = new Headers();
+  headers.append("Authorization", "Bearer TOKEN");
+  headers.append("X-Key", "KEY");
+
+  const controller = new AbortController();
+  const timeoutId = globalThis.setTimeout(
+    () => controller.abort(),
+    30_000,
+  );
+
+  try {
+    const response = await fetch("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", {
+      method: "POST",
+      headers,
+      body: formData,
+      signal: controller.signal,
+    });
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(
+        \`HTTP \${response.status} \${response.statusText}: \${responseText}\`,
+      );
+    }
+
+    return responseText;
+  } catch (error: unknown) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Request timed out after 30 seconds", {
+        cause: error,
+      });
+    }
+
+    throw error;
+  } finally {
+    globalThis.clearTimeout(timeoutId);
+  }
+}"
+`;
+
+exports[`all generators > node/ofetch 1`] = `
+"// Requires a modern browser with FormData, File, Headers, and AbortSignal.timeout().
+// Requires TypeScript 5.2+ and ofetch 1.4+.
+// Install: npm install ofetch@^1.4
+// Compile: npx tsc main.ts --target ES2022 --module ES2022 --moduleResolution bundler --lib ES2022,DOM --strict
+// Fetch may combine repeated headers according to its header model.
+// Multipart files must be supplied as File arguments; browsers cannot read local paths.
+
+import { ofetch } from "ofetch";
+
+export async function post_upload_by_id(
+  file1: File
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file1);
+  formData.append("name", "Ada");
+
+  const headers = new Headers();
+  headers.append("Authorization", "Bearer TOKEN");
+  headers.append("X-Key", "KEY");
+
+  try {
+    return await ofetch<string>(
+      "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+      {
+        method: "POST",
+        headers,
+        body: formData,
+        signal: AbortSignal.timeout(30_000),
+        responseType: "text",
+        retry: 0,
+      },
+    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(\`Request failed: \${error.message}\`, {
+        cause: error,
+      });
+    }
+
+    throw new Error("Request failed with an unknown error", {
+      cause: error,
+    });
+  }
+}"
+`;
+
+exports[`all generators > node/undici 1`] = `
+"// Requires Node.js 20+, TypeScript 5.2+, and undici 6.x.
+// Install: npm install undici@^6
+// Install development tools: npm install --save-dev typescript@^5.2 @types/node
+// Run: npx tsc request.ts --target ES2022 --module NodeNext --moduleResolution NodeNext && node request.js
+// Fetch Headers may combine duplicate header values according to Fetch semantics.
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+import { Blob } from "node:buffer";
+import { fetch, FormData, Headers } from "undici";
+import { readFile } from "node:fs/promises";
+
+async function main(): Promise<void> {
+  const formData = new FormData();
+  const fileData1 = await readFile("/tmp/file.bin");
+  formData.append(
+    "file",
+    new Blob([fileData1], { type: "application/octet-stream" }),
+    "file.bin",
+  );
+  formData.append(
+    "name",
+    "Ada",
+  );
+
+  const headers = new Headers();
+  headers.append("Authorization", "Bearer TOKEN");
+  headers.append("X-Key", "KEY");
+  headers.append("Cookie", "sid=cookie");
+
+  const response = await fetch("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y", {
+    method: "POST",
+    headers,
+    body: formData,
+    signal: AbortSignal.timeout(30_000),
+  });
+
+  const responseText = await response.text();
+
+  if (!response.ok) {
+    throw new Error(
+      \`HTTP \${response.status} \${response.statusText}: \${responseText}\`,
+    );
+  }
+
+  console.log(responseText);
+}
+
+main().catch((error: unknown) => {
+  const message =
+    error instanceof Error ? error.message : String(error);
+  console.error(\`Request failed: \${message}\`);
+  process.exitCode = 1;
+});"
+`;
+
+exports[`all generators > objc/nsurlsession 1`] = `
+"/* Requires Apple Clang with Objective-C ARC and Foundation on macOS 12+. */
+/* Compile: clang -fobjc-arc -framework Foundation main.m -o request */
+/* NSURLRequest stores headers as a dictionary; duplicate names are combined with commas. */
+/* TODO: replace /tmp/file.bin with the real local file path for multipart field file */
+
+@import Foundation;
+#include <stdio.h>
+#include <stdlib.h>
+
+static void AppendUTF8(NSMutableData *data, NSString *value) {
+  NSData *encoded = [value dataUsingEncoding:NSUTF8StringEncoding];
+  if (encoded != nil) {
+    [data appendData:encoded];
+  }
+}
+
+static NSString *QuoteMultipartValue(NSString *value) {
+  NSMutableString *result = [NSMutableString stringWithCapacity:value.length];
+
+  for (NSUInteger index = 0; index < value.length; index++) {
+    unichar character = [value characterAtIndex:index];
+
+    switch (character) {
+      case '\\r':
+      case '\\n':
+        [result appendString:@" "];
+        break;
+      case '"':
+        [result appendString:@"\\\\\\""];
+        break;
+      case '\\\\':
+        [result appendString:@"\\\\\\\\"];
+        break;
+      default:
+        if (character < 0x20 || character == 0x7F) {
+          [result appendString:@" "];
+        } else {
+          [result appendFormat:@"%C", character];
+        }
+        break;
+    }
+  }
+
+  return result;
+}
+
+static NSString *SafeMediaType(NSString *value) {
+  NSMutableString *result = [NSMutableString stringWithCapacity:value.length];
+
+  for (NSUInteger index = 0; index < value.length; index++) {
+    unichar character = [value characterAtIndex:index];
+    if (character >= 0x21 && character <= 0x7E) {
+      [result appendFormat:@"%C", character];
+    }
+  }
+
+  NSString *trimmed = [result stringByTrimmingCharactersInSet:
+    NSCharacterSet.whitespaceAndNewlineCharacterSet];
+  return trimmed.length > 0 ? trimmed : @"application/octet-stream";
+}
+
+int main(void) {
+  @autoreleasepool {
+    NSString *urlString = @"https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y";
+    NSURL *url = [NSURL URLWithString:urlString];
+    if (url == nil) {
+      fprintf(stderr, "Invalid URL: %s\\n", urlString.UTF8String);
+      return EXIT_FAILURE;
+    }
+
+    NSMutableURLRequest *urlRequest =
+      [NSMutableURLRequest requestWithURL:url];
+    urlRequest.HTTPMethod = @"POST";
+    urlRequest.timeoutInterval = 30.0;
+    [urlRequest setValue:@"Bearer TOKEN" forHTTPHeaderField:@"Authorization"];
+    [urlRequest setValue:@"KEY" forHTTPHeaderField:@"X-Key"];
+    [urlRequest setValue:@"sid=cookie" forHTTPHeaderField:@"Cookie"];
+    NSString *boundary = [NSString stringWithFormat:@"Boundary-%@", NSUUID.UUID.UUIDString];
+    NSMutableData *bodyData = [NSMutableData data];
+    AppendUTF8(bodyData, [NSString stringWithFormat:@"--%@\\r\\n", boundary]);
+    AppendUTF8(bodyData, [NSString stringWithFormat:
+      @"Content-Disposition: form-data; name=\\"%@\\"; filename=\\"%@\\"\\r\\n",
+      QuoteMultipartValue(@"file"),
+      QuoteMultipartValue(@"file.bin")]);
+    AppendUTF8(bodyData, [NSString stringWithFormat:
+      @"Content-Type: %@\\r\\n\\r\\n",
+      SafeMediaType(@"application/octet-stream")]);
+    NSURL *fileURL0 = [NSURL fileURLWithPath:@"/tmp/file.bin"];
+    NSError *fileError0 = nil;
+    NSData *fileData0 = [NSData dataWithContentsOfURL:fileURL0
+      options:NSDataReadingMappedIfSafe
+      error:&fileError0];
+    if (fileData0 == nil) {
+      fprintf(stderr, "Failed to read multipart file: %s\\n",
+        fileError0.localizedDescription.UTF8String ?: "unknown error");
+      return EXIT_FAILURE;
+    }
+    [bodyData appendData:fileData0];
+    AppendUTF8(bodyData, @"\\r\\n");
+    AppendUTF8(bodyData, [NSString stringWithFormat:@"--%@\\r\\n", boundary]);
+    AppendUTF8(bodyData, [NSString stringWithFormat:
+      @"Content-Disposition: form-data; name=\\"%@\\"\\r\\n\\r\\n",
+      QuoteMultipartValue(@"name")]);
+    AppendUTF8(bodyData, @"Ada");
+    AppendUTF8(bodyData, @"\\r\\n");
+    AppendUTF8(bodyData, [NSString stringWithFormat:@"--%@--\\r\\n", boundary]);
+    urlRequest.HTTPBody = bodyData;
+    [urlRequest setValue:
+      [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary]
+      forHTTPHeaderField:@"Content-Type"];
+
+    NSURLSessionConfiguration *configuration =
+      [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    configuration.timeoutIntervalForRequest = 30.0;
+    configuration.timeoutIntervalForResource = 30.0;
+
+    NSURLSession *session =
+      [NSURLSession sessionWithConfiguration:configuration];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block int exitCode = EXIT_FAILURE;
+
+    NSURLSessionDataTask *task = [session
+      dataTaskWithRequest:urlRequest
+      completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        @autoreleasepool {
+          if (error != nil) {
+            fprintf(stderr, "Request failed: %s\\n",
+              error.localizedDescription.UTF8String ?: "unknown error");
+            dispatch_semaphore_signal(semaphore);
+            return;
+          }
+
+          if (![response isKindOfClass:NSHTTPURLResponse.class]) {
+            fprintf(stderr, "The server returned a non-HTTP response\\n");
+            dispatch_semaphore_signal(semaphore);
+            return;
+          }
+
+          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+          NSString *responseText = [[NSString alloc]
+            initWithData:(data ?: [NSData data])
+            encoding:NSUTF8StringEncoding];
+          if (responseText == nil) {
+            responseText = [[NSString alloc]
+              initWithData:(data ?: [NSData data])
+              encoding:NSISOLatin1StringEncoding] ?: @"";
+          }
+
+          if (httpResponse.statusCode < 200 ||
+              httpResponse.statusCode >= 300) {
+            fprintf(stderr, "HTTP status %ld: %s\\n",
+              (long)httpResponse.statusCode,
+              responseText.UTF8String ?: "");
+            dispatch_semaphore_signal(semaphore);
+            return;
+          }
+
+          printf("%s\\n", responseText.UTF8String ?: "");
+          exitCode = EXIT_SUCCESS;
+          dispatch_semaphore_signal(semaphore);
+        }
+      }];
+
+    [task resume];
+    dispatch_time_t deadline = dispatch_time(
+      DISPATCH_TIME_NOW,
+      (int64_t)(30.0 * NSEC_PER_SEC)
+    );
+    if (dispatch_semaphore_wait(semaphore, deadline) != 0) {
+      [task cancel];
+      fprintf(stderr, "Request timed out after 30 seconds\\n");
+      exitCode = EXIT_FAILURE;
+    }
+
+    [session finishTasksAndInvalidate];
+    return exitCode;
+  }
+}"
+`;
+
+exports[`all generators > ocaml/cohttp 1`] = `
+"(* Requires OCaml 5.1+, cohttp-lwt-unix 6.x, lwt 5.x, and uri 4.x. *)
+(* Install: opam install cohttp-lwt-unix lwt uri *)
+(* Compile: ocamlfind ocamlopt -thread -linkpkg -package cohttp-lwt-unix,lwt.unix,uri main.ml -o request *)
+(* Cohttp Header.add preserves repeated header fields. *)
+(* TODO: replace /tmp/file.bin with the real local file path for multipart field file *)
+
+open Lwt.Infix
+
+exception Http_error of int * string
+
+let read_file path =
+  let channel = open_in_bin path in
+  Fun.protect
+    ~finally:(fun () -> close_in_noerr channel)
+    (fun () ->
+      let length = in_channel_length channel in
+      really_input_string channel length)
+
+let quote_multipart_value value =
+  let buffer = Buffer.create (String.length value) in
+  String.iter
+    (function
+      | '\\r' | '\\n' -> Buffer.add_char buffer ' '
+      | '"' -> Buffer.add_string buffer "\\\\\\""
+      | '\\\\' -> Buffer.add_string buffer "\\\\\\\\"
+      | character ->
+          if Char.code character < 32 || Char.code character = 127 then
+            Buffer.add_char buffer ' '
+          else
+            Buffer.add_char buffer character)
+    value;
+  Buffer.contents buffer
+
+let safe_media_type value =
+  let buffer = Buffer.create (String.length value) in
+  String.iter
+    (fun character ->
+      let code = Char.code character in
+      if code >= 33 && code <= 126 then
+        Buffer.add_char buffer character)
+    value;
+  let result = String.trim (Buffer.contents buffer) in
+  if result = "" then "application/octet-stream" else result
+
+let method_of_string value =
+  match String.uppercase_ascii value with
+  | "GET" -> \`GET
+  | "HEAD" -> \`HEAD
+  | "POST" -> \`POST
+  | "PUT" -> \`PUT
+  | "DELETE" -> \`DELETE
+  | "PATCH" -> \`PATCH
+  | "OPTIONS" -> \`OPTIONS
+  | "CONNECT" -> \`CONNECT
+  | "TRACE" -> \`TRACE
+  | other -> \`Other other
+
+let add_headers headers values =
+  List.fold_left
+    (fun result (name, value) ->
+      Cohttp.Header.add result name value)
+    headers
+    values
+
+let run () =
+  let uri = Uri.of_string "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y" in
+  let http_method = method_of_string "POST" in
+  let headers =
+    add_headers (Cohttp.Header.init ())
+      [
+        ("Authorization", "Bearer TOKEN");
+        ("X-Key", "KEY");
+        ("Cookie", "sid=cookie");
+      ]
+  in
+  let boundary =
+    "Boundary-" ^ Uuidm.to_string (Uuidm.v \`V4)
+  in
+  let buffer = Buffer.create 4096 in
+  Buffer.add_string buffer ("--" ^ boundary ^ "\\r\\n");
+  Buffer.add_string buffer
+    ("Content-Disposition: form-data; name=\\"" ^
+     quote_multipart_value "file" ^
+     "\\"; filename=\\"" ^
+     quote_multipart_value "file.bin" ^
+     "\\"\\r\\n");
+  Buffer.add_string buffer
+    ("Content-Type: " ^
+     safe_media_type "application/octet-stream" ^
+     "\\r\\n\\r\\n");
+  let file_content_0 =
+    read_file "/tmp/file.bin"
+  in
+  Buffer.add_string buffer file_content_0;
+  Buffer.add_string buffer "\\r\\n";
+  Buffer.add_string buffer ("--" ^ boundary ^ "\\r\\n");
+  Buffer.add_string buffer
+    ("Content-Disposition: form-data; name=\\"" ^
+     quote_multipart_value "name" ^
+     "\\"\\r\\n\\r\\n");
+  Buffer.add_string buffer "Ada";
+  Buffer.add_string buffer "\\r\\n";
+  Buffer.add_string buffer ("--" ^ boundary ^ "--\\r\\n");
+  let request_body = Cohttp_lwt.Body.of_string (Buffer.contents buffer) in
+  let headers =
+    Header.add headers "Content-Type"
+      ("multipart/form-data; boundary=" ^ boundary)
+  in
+  let request =
+    Cohttp_lwt_unix.Client.call
+      ~headers
+      ~body:request_body
+      http_method
+      uri
+  in
+  Lwt_unix.with_timeout 30.0 (fun () -> request)
+  >>= fun (response, response_body) ->
+  Cohttp_lwt.Body.to_string response_body
+  >>= fun response_text ->
+  let status =
+    Cohttp.Response.status response
+  in
+  let status_code = Cohttp.Code.code_of_status status in
+  if status_code < 200 || status_code > 299 then
+    Lwt.fail (Http_error (status_code, response_text))
+  else
+    Lwt_io.print response_text
+
+let report_error error =
+  let message =
+    match error with
+    | Http_error (status, response_body) ->
+        Printf.sprintf
+          "HTTP status %d: %s"
+          status
+          response_body
+    | Lwt_unix.Timeout ->
+        "Request timed out after 30 seconds"
+    | other -> Printexc.to_string other
+  in
+  Lwt_io.eprintlf "Request failed: %s" message
+
+let () =
+  match Lwt_main.run (Lwt.catch run report_error) with
+  | () -> ()
+  | exception error ->
+      prerr_endline ("Request failed: " ^ Printexc.to_string error);
+      exit 1"
+`;
+
+exports[`all generators > php/curl 1`] = `
+"<?php
+
+declare(strict_types=1);
+
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+$file1 = new CURLFile(
+  '/tmp/file.bin',
+  'application/octet-stream',
+  'file.bin'
+);
+$postFields = [
+  'file' => $file1,
+  'name' => 'Ada',
+];
+
+$ch = curl_init();
+
+if ($ch === false) {
+  throw new RuntimeException('Unable to initialize cURL');
+}
+
+try {
+  curl_setopt_array($ch, [
+    CURLOPT_URL => 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y',
+    CURLOPT_CUSTOMREQUEST => 'POST',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_CONNECTTIMEOUT => 10,
+    CURLOPT_TIMEOUT => 30,
+    CURLOPT_HTTPHEADER => [
+      'Authorization: Bearer TOKEN',
+      'X-Key: KEY',
+      'Cookie: sid=cookie',
+    ],
+    CURLOPT_POSTFIELDS => $postFields,
+  ]);
+
+  $responseBody = curl_exec($ch);
+
+  if ($responseBody === false) {
+    throw new RuntimeException(
+      sprintf('cURL error %d: %s', curl_errno($ch), curl_error($ch))
+    );
+  }
+
+  $statusCode = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+
+  if ($statusCode < 200 || $statusCode >= 300) {
+    throw new RuntimeException(
+      sprintf('HTTP %d: %s', $statusCode, $responseBody)
+    );
+  }
+
+  echo $responseBody;
+} finally {
+  curl_close($ch);
+}"
+`;
+
+exports[`all generators > php/guzzle 1`] = `
+"<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/vendor/autoload.php';
+
+use GuzzleHttp\\Client;
+
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+$client = new Client();
+$fileHandle1 = fopen('/tmp/file.bin', 'rb');
+
+if ($fileHandle1 === false) {
+  throw new RuntimeException('Unable to open multipart file');
+}
+
+try {
+  $response = $client->request('POST', 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y', [
+  'headers' => [
+    'Authorization' => 'Bearer TOKEN',
+    'X-Key' => 'KEY',
+    'Cookie' => 'sid=cookie',
+  ],
+  'connect_timeout' => 10.0,
+  'timeout' => 30.0,
+  'http_errors' => false,
+  'multipart' => [
+    [
+      'name' => 'file',
+      'contents' => $fileHandle1,
+      'filename' => 'file.bin',
+      'headers' => [
+        'Content-Type' => 'application/octet-stream',
+      ],
+    ],
+    [
+      'name' => 'name',
+      'contents' => 'Ada',
+    ],
+  ],
+  ]);
+
+  $responseBody = (string) $response->getBody();
+  $statusCode = $response->getStatusCode();
+
+  if ($statusCode < 200 || $statusCode >= 300) {
+    throw new RuntimeException(
+      sprintf('HTTP %d: %s', $statusCode, $responseBody)
+    );
+  }
+
+  echo $responseBody;
+} finally {
+  if (is_resource($fileHandle1)) { fclose($fileHandle1); }
+}"
+`;
+
+exports[`all generators > php/laravel-http 1`] = `
+"<?php
+
+declare(strict_types=1);
+
+use Illuminate\\Support\\Facades\\Http;
+
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+$headers = [
+  'Authorization' => 'Bearer TOKEN',
+  'X-Key' => 'KEY',
+  'Cookie' => 'sid=cookie',
+];
+
+$fields = [
+  'name' => 'Ada',
+];
+
+$fileHandle1 = fopen('/tmp/file.bin', 'rb');
+if ($fileHandle1 === false) {
+  throw new RuntimeException('Unable to open multipart file: /tmp/file.bin');
+}
+
+try {
+  $response = Http::withHeaders($headers)
+    ->connectTimeout(10)
+    ->timeout(30)
+  ->attach('file', $fileHandle1, 'file.bin', ['Content-Type' => 'application/octet-stream'])
+  ->post('https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y', $fields);
+
+  if (!$response->successful()) {
+    throw new RuntimeException(
+      sprintf('HTTP %d: %s', $response->status(), $response->body())
+    );
+  }
+
+  echo $response->body();
+} finally {
+  if (is_resource($fileHandle1)) { fclose($fileHandle1); }
+}"
+`;
+
+exports[`all generators > powershell/invoke-restmethod 1`] = `
+"# Requires PowerShell 7.4 or later.
+# Multipart uploads require Invoke-RestMethod -Form support.
+# Repeated request-header values are combined with commas.
+# Multipart file name and media-type overrides are not supported by -Form.
+
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+$headers = @{}
+$headers['Authorization'] = 'Bearer TOKEN'
+$headers['X-Key'] = 'KEY'
+$headers['Cookie'] = 'sid=cookie'
+
+$parameters = @{
+  Method = 'POST'
+  Uri = 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y'
+  Headers = $headers
+  TimeoutSec = 30
+  ErrorAction = 'Stop'
+}
+
+$form = [ordered]@{}
+$form['file'] = Get-Item -LiteralPath '/tmp/file.bin' -ErrorAction Stop
+$form['name'] = 'Ada'
+
+$parameters['Form'] = $form
+
+try {
+  $response = Invoke-RestMethod @parameters
+
+  if ($null -ne $response) {
+    $response | ConvertTo-Json -Depth 100
+  }
+} catch {
+  $statusCode = $null
+  $responseBody = $null
+
+  if ($null -ne $_.Exception.Response) {
+    $statusCode = [int]$_.Exception.Response.StatusCode
+  }
+
+  if ($null -ne $_.ErrorDetails -and $_.ErrorDetails.Message) {
+    $responseBody = $_.ErrorDetails.Message
+  }
+
+  if ($null -ne $statusCode) {
+    $message = "HTTP \${statusCode}: \${responseBody}"
+  } else {
+    $message = $_.Exception.Message
+  }
+
+  throw [System.Net.Http.HttpRequestException]::new(
+    $message,
+    $_.Exception
+  )
+}"
+`;
+
+exports[`all generators > powershell/invoke-webrequest 1`] = `
+"# Requires PowerShell 7.4 or later.
+# Multipart uploads require Invoke-WebRequest -Form support.
+# Repeated request-header values are combined with commas.
+
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+$headers = @{}
+$headers['Authorization'] = 'Bearer TOKEN'
+$headers['X-Key'] = 'KEY'
+$headers['Cookie'] = 'sid=cookie'
+
+$parameters = @{
+  Method = 'POST'
+  Uri = 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y'
+  Headers = $headers
+  TimeoutSec = 30
+  ErrorAction = 'Stop'
+}
+
+$form = [ordered]@{}
+$form['file'] = Get-Item -LiteralPath '/tmp/file.bin' -ErrorAction Stop
+$form['name'] = 'Ada'
+
+$parameters['Form'] = $form
+
+try {
+  $response = Invoke-WebRequest @parameters
+  $response.Content
+} catch {
+  $statusCode = $null
+  $responseBody = $null
+
+  if ($null -ne $_.Exception.Response) {
+    $statusCode = [int]$_.Exception.Response.StatusCode
+  }
+
+  if ($null -ne $_.ErrorDetails -and $_.ErrorDetails.Message) {
+    $responseBody = $_.ErrorDetails.Message
+  }
+
+  if ($null -ne $statusCode) {
+    $message = "HTTP \${statusCode}: \${responseBody}"
+  } else {
+    $message = $_.Exception.Message
+  }
+
+  throw [System.Net.Http.HttpRequestException]::new(
+    $message,
+    $_.Exception
+  )
+}"
+`;
+
+exports[`all generators > python/aiohttp 1`] = `
+"# Requires Python 3.10 or later.
+# Requires aiohttp 3.9 or later: python -m pip install 'aiohttp>=3.9'
+# Repeated request headers are preserved in their original order.
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+import asyncio
+from contextlib import ExitStack
+
+import aiohttp
+
+
+async def main() -> None:
+    headers = aiohttp.CIMultiDict(
+    [
+        ("Authorization", "Bearer TOKEN"),
+        ("X-Key", "KEY"),
+        ("Cookie", "sid=cookie"),
+    ]
+    )
+
+    timeout = aiohttp.ClientTimeout(total=30)
+
+    with ExitStack() as stack:
+    form_data = aiohttp.FormData(quote_fields=True)
+    file_handle = stack.enter_context(open("/tmp/file.bin", "rb"))
+    form_data.add_field(
+        "file",
+        file_handle,
+        filename="file.bin",
+        content_type="application/octet-stream",
+    )
+    form_data.add_field(
+        "name",
+        "Ada",
+    )
+
+        try:
+            async with aiohttp.ClientSession(
+                headers=headers,
+                timeout=timeout,
+            ) as session:
+                async with session.request(
+                    "POST",
+                    "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+                    data=form_data,
+                ) as response:
+                    response_body = await response.text(errors='replace')
+
+                    if not 200 <= response.status < 300:
+                        raise RuntimeError(
+                            f"HTTP {response.status}: {response_body}"
+                        )
+
+                    print(response_body)
+        except (aiohttp.ClientError, asyncio.TimeoutError) as error:
+            raise RuntimeError(f"HTTP request failed: {error}") from error
+
+
+if __name__ == "__main__":
+    asyncio.run(main())"
+`;
+
+exports[`all generators > python/http-client 1`] = `
+"# Requires Python 3.10 or later.
+# Uses only the Python standard library; no installation is required.
+# Repeated request headers are preserved in their original order.
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+import http.client
+import secrets
+import urllib.parse
+from pathlib import Path
+
+
+def quote_disposition(value: str) -> str:
+    return value.replace("\\\\", "\\\\\\\\").replace('"', '\\\\"')
+
+
+def encode_multipart(
+    parts: list[tuple[str, str | None, str | None, bytes]],
+    boundary: str,
+) -> bytes:
+    output = bytearray()
+    boundary_bytes = boundary.encode('ascii')
+
+    for field_name, file_name, content_type, value in parts:
+        output.extend(b'--' + boundary_bytes + b'\\r\\n')
+
+        disposition = (
+            'Content-Disposition: form-data; name="'
+            + quote_disposition(field_name)
+            + '"'
+        )
+
+        if file_name is not None:
+            disposition += (
+                '; filename="'
+                + quote_disposition(file_name)
+                + '"'
+            )
+
+        output.extend(disposition.encode('utf-8'))
+        output.extend(b'\\r\\n')
+
+        if content_type is not None:
+            output.extend(
+                f'Content-Type: {content_type}\\r\\n'.encode('utf-8')
+            )
+
+        output.extend(b'\\r\\n')
+        output.extend(value)
+        output.extend(b'\\r\\n')
+
+    output.extend(b'--' + boundary_bytes + b'--\\r\\n')
+    return bytes(output)
+
+
+def main() -> None:
+    parsed = urllib.parse.urlsplit("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+
+    if parsed.scheme not in {'http', 'https'}:
+        raise ValueError(
+            f"Unsupported URL scheme: {parsed.scheme or 'missing'}"
+        )
+
+    if parsed.hostname is None:
+        raise ValueError("The request URL must include a hostname")
+
+    path = urllib.parse.urlunsplit(
+        ('', '', parsed.path or '/', parsed.query, '')
+    )
+
+    request_headers: list[tuple[str, str]] = [
+    ("Authorization", "Bearer TOKEN"),
+    ("X-Key", "KEY"),
+    ("Cookie", "sid=cookie"),
+    ]
+    boundary = f"----http-client-{secrets.token_hex(24)}"
+    parts: list[tuple[str, str | None, str | None, bytes]] = []
+    parts.append(
+        (
+            "file",
+            "file.bin",
+            "application/octet-stream",
+            Path("/tmp/file.bin").read_bytes(),
+        )
+    )
+    parts.append(
+        (
+            "name",
+            None,
+            None,
+            "Ada".encode("utf-8"),
+        )
+    )
+    request_body = encode_multipart(parts, boundary)
+    request_headers.append(("Content-Type", f"multipart/form-data; boundary={boundary}"))
+
+    connection_class = (
+        http.client.HTTPSConnection
+        if parsed.scheme == 'https'
+        else http.client.HTTPConnection
+    )
+
+    connection = connection_class(
+        parsed.hostname,
+        parsed.port,
+        timeout=30,
+    )
+
+    try:
+        connection.putrequest("POST", path)
+
+        for name, value in request_headers:
+            connection.putheader(name, value)
+
+        if request_body is not None:
+            connection.putheader('Content-Length', str(len(request_body)))
+
+        connection.endheaders(request_body)
+        response = connection.getresponse()
+
+        try:
+            response_body = response.read()
+            charset = response.headers.get_content_charset() or 'utf-8'
+            response_text = response_body.decode(
+                charset,
+                errors='replace',
+            )
+
+            if not 200 <= response.status < 300:
+                raise RuntimeError(
+                    f"HTTP {response.status} {response.reason}: "
+                    f'{response_text}'
+                )
+
+            print(response_text)
+        finally:
+            response.close()
+    except (OSError, http.client.HTTPException) as error:
+        raise RuntimeError(f"HTTP request failed: {error}") from error
+    finally:
+        connection.close()
+
+
+if __name__ == '__main__':
+    main()"
+`;
+
+exports[`all generators > python/httpx-async 1`] = `
+"# Requires Python 3.10 or later.
+# Requires HTTPX 0.27 or later: python -m pip install 'httpx>=0.27'
+# Repeated request headers and multipart fields are preserved in order.
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+import asyncio
+from contextlib import ExitStack
+from typing import BinaryIO
+
+import httpx
+
+
+async def main() -> None:
+    headers = [
+        ("Authorization", "Bearer TOKEN"),
+        ("X-Key", "KEY"),
+        ("Cookie", "sid=cookie"),
+    ]
+
+    timeout = httpx.Timeout(30.0)
+
+    with ExitStack() as stack:
+        data: list[tuple[str, str]] = []
+        files: list[tuple[str, tuple[str, BinaryIO, str]]] = []
+        file_handle = stack.enter_context(open("/tmp/file.bin", "rb"))
+        files.append(
+            (
+                "file",
+                (
+                    "file.bin",
+                    file_handle,
+                    "application/octet-stream",
+                ),
+            )
+        )
+        data.append(("name", "Ada"))
+
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                response = await client.request(
+                    "POST",
+                    "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+                    headers=headers,
+                data=data,
+                files=files,
+                )
+
+                if not 200 <= response.status_code < 300:
+                    raise RuntimeError(
+                        f"HTTP {response.status_code}: {response.text}"
+                    )
+
+                print(response.text)
+        except httpx.HTTPError as error:
+            raise RuntimeError(f"HTTP request failed: {error}") from error
+
+
+if __name__ == "__main__":
+    asyncio.run(main())"
+`;
+
+exports[`all generators > python/httpx-sync 1`] = `
+"# Requires Python 3.10 or later.
+# Requires HTTPX 0.27 or later: python -m pip install 'httpx>=0.27'
+# Repeated request headers and multipart fields are preserved in order.
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+from contextlib import ExitStack
+from typing import BinaryIO
+
+import httpx
+
+
+def main() -> None:
+    headers: list[tuple[str, str]] = [
+    ("Authorization", "Bearer TOKEN"),
+    ("X-Key", "KEY"),
+    ("Cookie", "sid=cookie"),
+    ]
+
+    timeout = httpx.Timeout(30.0)
+
+    with ExitStack() as stack:
+    data: list[tuple[str, str]] = []
+    files: list[tuple[str, tuple[str, BinaryIO, str]]] = []
+    file_handle = stack.enter_context(open("/tmp/file.bin", "rb"))
+    files.append(
+        (
+            "file",
+            (
+                "file.bin",
+                file_handle,
+                "application/octet-stream",
+            ),
+        )
+    )
+    data.append(("name", "Ada"))
+
+        try:
+            with httpx.Client(timeout=timeout) as client:
+                response = client.request(
+                    "POST",
+                    "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+                    headers=headers,
+            data=data,
+            files=files,
+                )
+
+                if not 200 <= response.status_code < 300:
+                    raise RuntimeError(
+                        f"HTTP {response.status_code}: {response.text}"
+                    )
+
+                print(response.text)
+        except httpx.HTTPError as error:
+            raise RuntimeError(f"HTTP request failed: {error}") from error
+
+
+if __name__ == "__main__":
+    main()"
+`;
+
+exports[`all generators > python/requests 1`] = `
+"# Requires Python 3.10 or later.
+# Requires Requests 2.31 or later:
+#   python -m pip install 'requests>=2.31'
+# Requests cannot preserve duplicate request headers; values are
+# combined with commas in their original order.
+# Duplicate multipart fields and files are preserved.
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+from contextlib import ExitStack
+from typing import BinaryIO
+
+import requests
+
+
+def combine_headers(
+    values: list[tuple[str, str]],
+) -> dict[str, str]:
+    headers: dict[str, str] = {}
+    canonical_names: dict[str, str] = {}
+
+    for name, value in values:
+        normalized = name.lower()
+        existing_name = canonical_names.get(normalized)
+
+        if existing_name is None:
+            canonical_names[normalized] = name
+            headers[name] = value
+        else:
+            headers[existing_name] = (
+                f'{headers[existing_name]}, {value}'
+            )
+
+    return headers
+
+
+def main() -> None:
+    header_items: list[tuple[str, str]] = [
+    ("Authorization", "Bearer TOKEN"),
+    ("X-Key", "KEY"),
+    ("Cookie", "sid=cookie"),
+    ]
+    headers = combine_headers(header_items)
+
+    with ExitStack() as stack:
+        data: list[tuple[str, str]] = []
+        files: list[
+            tuple[str, tuple[str, BinaryIO, str]]
+        ] = []
+        file_handle = stack.enter_context(open("/tmp/file.bin", "rb"))
+        files.append(
+            (
+                "file",
+                (
+                    "file.bin",
+                    file_handle,
+                    "application/octet-stream",
+                ),
+            )
+        )
+        data.append(("name", "Ada"))
+
+        try:
+            with requests.Session() as session:
+                response = session.request(
+                    method="POST",
+                    url="https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y",
+                    headers=headers,
+                data=data,
+                files=files,
+                    timeout=30,
+                )
+
+                try:
+                    response_text = response.text
+
+                    if not 200 <= response.status_code < 300:
+                        raise RuntimeError(
+                            f"HTTP {response.status_code}: "
+                            f"{response_text}"
+                        )
+
+                    print(response_text)
+                finally:
+                    response.close()
+        except requests.RequestException as error:
+            raise RuntimeError(
+                f"HTTP request failed: {error}"
+            ) from error
+
+
+if __name__ == "__main__":
+    main()"
+`;
+
+exports[`all generators > r/httr2 1`] = `
+"# TODO: replace "/tmp/file.bin" with the real local file path for "file"
+library(httr2)
+
+req <- request("https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y") |>
+  req_method("POST")
+
+req <- req |> req_headers(
+  Authorization = "Bearer TOKEN",
+  \`X-Key\` = "KEY",
+  Cookie = "sid=cookie"
+)
+
+req <- req |> req_body_multipart(
+  file = upload_file("/tmp/file.bin"),
+  name = "Ada"
+)
+
+response <- req |> req_perform()
+resp_body_string(response)"
+`;
+
+exports[`all generators > ruby/net-http 1`] = `
+"# Requires Ruby 3.1 or later.
+# Uses only the Ruby standard library; no gem installation is required.
+# Repeated request-header values are preserved in their original order.
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+require "net/http"
+require "uri"
+require "securerandom"
+require "stringio"
+
+def generate_boundary
+  "----ruby-net-http-#{SecureRandom.hex(24)}"
+end
+
+def escape_disposition(value)
+  value
+    .gsub("\\\\", "\\\\\\\\")
+    .gsub('"', '\\\\"')
+    .gsub(/[\\r\\n]/, "")
+end
+
+def encode_multipart(entries, boundary)
+  body = +"".b
+
+  entries.each do |entry|
+    body << "--#{boundary}\\r\\n".b
+    disposition = (
+      'Content-Disposition: form-data; name="' +
+      escape_disposition(entry.fetch(:name)) +
+      '"'
+    )
+
+    if entry.key?(:path)
+      disposition << (
+        '; filename="' +
+        escape_disposition(entry.fetch(:filename)) +
+        '"'
+      )
+    end
+
+    body << "#{disposition}\\r\\n".b
+
+    if entry.key?(:content_type)
+      content_type = entry.fetch(:content_type)
+      body << "Content-Type: #{content_type}\\r\\n".b
+    end
+
+    body << "\\r\\n".b
+
+    if entry.key?(:path)
+      File.open(entry.fetch(:path), 'rb') do |file|
+        IO.copy_stream(file, StringIO.new(body))
+      end
+    else
+      body << entry.fetch(:value).encode(
+        Encoding::UTF_8,
+        invalid: :replace,
+        undef: :replace,
+      )
+    end
+
+    body << "\\r\\n".b
+  end
+
+  body << "--#{boundary}--\\r\\n".b
+  body
+end
+
+def main
+  uri = URI.parse('https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y')
+
+  unless %w[http https].include?(uri.scheme)
+    raise ArgumentError, (
+      "unsupported URL scheme: #{uri.scheme || 'missing'}"
+    )
+  end
+
+  raise ArgumentError, "URL must include a host" unless uri.host
+
+  request = Net::HTTPGenericRequest.new(
+    'POST',
+    true,
+    true,
+    uri.request_uri.empty? ? '/' : uri.request_uri,
+  )
+
+  header_items = [
+  ['Authorization', 'Bearer TOKEN'],
+  ['X-Key', 'KEY'],
+  ['Cookie', 'sid=cookie'],
+  ]
+
+  header_items.each do |name, value|
+    request.add_field(name, value)
+  end
+
+  multipart_entries = [
+    {
+      name: 'file',
+      path: '/tmp/file.bin',
+      filename: 'file.bin',
+      content_type: 'application/octet-stream',
+    },
+    {
+      name: 'name',
+      value: 'Ada',
+    },
+  ]
+
+  boundary = generate_boundary
+  request.body = encode_multipart(
+    multipart_entries,
+    boundary,
+  )
+  request['Content-Type'] = (
+    "multipart/form-data; boundary=#{boundary}"
+  )
+
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = uri.scheme == 'https'
+  http.open_timeout = 30
+  http.read_timeout = 30
+  http.write_timeout = 30
+
+  response = http.start do |connection|
+    connection.request(request)
+  end
+
+  unless response.is_a?(Net::HTTPSuccess)
+    raise RuntimeError, (
+      "HTTP #{response.code} #{response.message}: #{response.body}"
+    )
+  end
+
+  puts response.body
+rescue URI::InvalidURIError,
+       SocketError,
+       SystemCallError,
+       IOError,
+       Timeout::Error,
+       Net::HTTPBadResponse,
+       Net::HTTPHeaderSyntaxError,
+       Net::ProtocolError => error
+  raise RuntimeError, "HTTP request failed: #{error.message}"
+end
+
+main if $PROGRAM_NAME == __FILE__"
+`;
+
+exports[`all generators > rust/reqwest 1`] = `
+"// Requires Rust 1.74 or later.
+// Requires reqwest 0.12 or later.
+//
+// Cargo.toml:
+// reqwest = { version = "0.12", features = ["blocking", "multipart"] }
+//
+// Repeated request headers and multipart fields are preserved in order.
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+use reqwest::blocking::Client;
+use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
+use reqwest::Method;
+use std::fs::File;
+use std::error::Error;
+use std::io;
+use std::time::Duration;
+
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let client = Client::builder()
+        .connect_timeout(Duration::from_secs(30))
+        .timeout(Duration::from_secs(30))
+        .build()?;
+
+    let mut headers = HeaderMap::new();
+    {
+        let name = HeaderName::from_bytes("Authorization".as_bytes())?;
+        let value = HeaderValue::from_str("Bearer TOKEN")?;
+        headers.append(name, value);
+    }
+    {
+        let name = HeaderName::from_bytes("X-Key".as_bytes())?;
+        let value = HeaderValue::from_str("KEY")?;
+        headers.append(name, value);
+    }
+    {
+        let name = HeaderName::from_bytes("Cookie".as_bytes())?;
+        let value = HeaderValue::from_str("sid=cookie")?;
+        headers.append(name, value);
+    }
+
+    let method = Method::from_bytes("POST".as_bytes())?;
+
+    let mut multipart_form = reqwest::blocking::multipart::Form::new();
+    {
+        let file = File::open("/tmp/file.bin")?;
+        let part = reqwest::blocking::multipart::Part::reader(file)
+            .file_name("file.bin")
+            .mime_str("application/octet-stream")?;
+        multipart_form = multipart_form.part(
+            "file",
+            part,
+        );
+    }
+    multipart_form = multipart_form.text(
+        "name",
+        "Ada".to_owned(),
+    );
+
+    let request = client
+        .request(method, "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y")
+        .headers(headers)
+        .multipart(multipart_form)
+        .build()?;
+
+    let response = client.execute(request)?;
+    let status = response.status();
+    let response_body = response.text()?;
+
+    if !status.is_success() {
+        return Err(io::Error::other(format!(
+            "HTTP {}: {}",
+            status,
+            response_body,
+        ))
+        .into());
+    }
+
+    println!("{}", response_body);
+    Ok(())
+}"
+`;
+
+exports[`all generators > shell/curl 1`] = `
+"# Requires curl 7.76.0+.
+# Install: https://curl.se/download.html
+# Repeated headers and multipart fields are emitted separately.
+# --connect-timeout limits connection setup; --max-time limits the whole transfer.
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+curl --fail-with-body --show-error --silent \\
+  --connect-timeout 30 \\
+  --max-time 30 \\
+  --request 'POST' \\
+  --url 'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y' \\
+  --header 'Authorization: Bearer TOKEN' \\
+  --header 'X-Key: KEY' \\
+  --header 'Cookie: sid=cookie' \\
+  --form 'file=@/tmp/file.bin;filename=file.bin;type=application/octet-stream' \\
+  --form-string 'name=Ada'"
+`;
+
+exports[`all generators > shell/httpie 1`] = `
+"# Requires HTTPie 3.2+.
+# Install: python3 -m pip install 'httpie>=3.2,<4'
+# HTTPie preserves repeated header arguments and repeated form fields.
+# TODO: replace /tmp/file.bin with the real local file path for multipart field file
+http \\
+  --check-status \\
+  --timeout=30 \\
+  --form \\
+  'POST' \\
+  'https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y' \\
+  'Authorization:Bearer TOKEN' \\
+  'X-Key:KEY' \\
+  'Cookie:sid=cookie' \\
+  'file@/tmp/file.bin;type=application/octet-stream;filename=file.bin' \\
+  'name=Ada'"
+`;
+
+exports[`all generators > swift/nsurlsession 1`] = `
+"// Requires Swift 5.7+ on macOS 12+ or Linux with FoundationNetworking.
+// Compile on macOS: swiftc main.swift -o request
+// Compile on Linux: swiftc main.swift -o request
+// URLSession cannot preserve duplicate request headers reliably;
+// duplicate names are safely combined with commas.
+// TODO: replace /tmp/file.bin with the real local file path for multipart field file
+
+import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
+enum RequestError: Error, CustomStringConvertible {
+    case invalidURL(String)
+    case utf8Encoding
+    case invalidResponse
+    case httpStatus(Int, String)
+
+    var description: String {
+        switch self {
+        case .invalidURL(let value):
+            return "Invalid URL: \\(value)"
+        case .utf8Encoding:
+            return "Failed to encode request data as UTF-8"
+        case .invalidResponse:
+            return "The server returned a non-HTTP response"
+        case .httpStatus(let status, let body):
+            return "HTTP status \\(status): \\(body)"
+        }
+    }
+}
+
+func quotedMultipartValue(_ value: String) -> String {
+    value
+        .replacingOccurrences(of: "\\r", with: " ")
+        .replacingOccurrences(of: "\\n", with: " ")
+        .replacingOccurrences(of: "\\\\", with: "\\\\\\\\")
+        .replacingOccurrences(of: "\\"", with: "\\\\\\"")
+}
+
+func safeMediaType(_ value: String) -> String {
+    let sanitized = value
+        .replacingOccurrences(of: "\\r", with: "")
+        .replacingOccurrences(of: "\\n", with: "")
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+    return sanitized.isEmpty
+        ? "application/octet-stream"
+        : sanitized
+}
+
+@main
+struct Main {
+    static func main() async {
+        do {
+            try await run()
+        } catch {
+            FileHandle.standardError.write(
+                Data("Request failed: \\(error)\\n".utf8)
+            )
+            Foundation.exit(EXIT_FAILURE)
+        }
+    }
+
+    static func run() async throws {
+        let urlString = "https://api.example.com/upload/42?filter%5Bname%5D=Ada&raw%5Bx%5D=y"
+        guard let url = URL(string: urlString) else {
+            throw RequestError.invalidURL(urlString)
+        }
+
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.timeoutInterval = 30
+        urlRequest.setValue("Bearer TOKEN", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("KEY", forHTTPHeaderField: "X-Key")
+        urlRequest.setValue("sid=cookie", forHTTPHeaderField: "Cookie")
+        let boundary = "Boundary-\\(UUID().uuidString)"
+        var bodyData = Data()
+
+        func appendUtf8(_ value: String, to data: inout Data) throws {
+            guard let encoded = value.data(using: .utf8) else {
+                throw RequestError.utf8Encoding
+            }
+            data.append(encoded)
+        }
+
+        try appendUtf8("--\\(boundary)\\r\\n", to: &bodyData)
+        try appendUtf8("Content-Disposition: form-data; name=\\"\\(quotedMultipartValue("file"))\\"; filename=\\"\\(quotedMultipartValue("file.bin"))\\"\\r\\n", to: &bodyData)
+        try appendUtf8("Content-Type: \\(safeMediaType("application/octet-stream"))\\r\\n\\r\\n", to: &bodyData)
+        let fileURL0 = URL(fileURLWithPath: "/tmp/file.bin")
+        bodyData.append(try Data(contentsOf: fileURL0, options: [.mappedIfSafe]))
+        try appendUtf8("\\r\\n", to: &bodyData)
+
+        try appendUtf8("--\\(boundary)\\r\\n", to: &bodyData)
+        try appendUtf8("Content-Disposition: form-data; name=\\"\\(quotedMultipartValue("name"))\\"\\r\\n\\r\\n", to: &bodyData)
+        try appendUtf8("Ada", to: &bodyData)
+        try appendUtf8("\\r\\n", to: &bodyData)
+
+        try appendUtf8("--\\(boundary)--\\r\\n", to: &bodyData)
+        urlRequest.httpBody = bodyData
+        urlRequest.setValue(
+            "multipart/form-data; boundary=\\(boundary)",
+            forHTTPHeaderField: "Content-Type"
+        )
+
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 30
+        configuration.timeoutIntervalForResource = 30
+        let session = URLSession(configuration: configuration)
+        defer {
+            session.invalidateAndCancel()
+        }
+
+        let (data, response) = try await session.data(for: urlRequest)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw RequestError.invalidResponse
+        }
+
+        let responseBody = String(decoding: data, as: UTF8.self)
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw RequestError.httpStatus(
+                httpResponse.statusCode,
+                responseBody
+            )
+        }
+
+        print(responseBody)
+    }
+}"
+`;

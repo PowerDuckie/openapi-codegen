@@ -1,0 +1,101 @@
+{
+  "openapi": "3.2.0",
+  "info": {
+    "title": "v0.4",
+    "version": "1"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "key": {
+        "type": "apiKey",
+        "name": "X-Key",
+        "in": "header"
+      }
+    }
+  },
+  "paths": {
+    "/upload/{id}": {
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "example": "42"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "style": "deepObject",
+            "explode": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Ada"
+                }
+              }
+            }
+          },
+          {
+            "name": "raw",
+            "in": "querystring",
+            "style": "deepObject",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "example": "y"
+                }
+              }
+            }
+          },
+          {
+            "name": "sid",
+            "in": "cookie",
+            "schema": {
+              "example": "cookie"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "name": {
+                    "example": "Ada"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

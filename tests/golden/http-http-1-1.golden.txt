@@ -1,0 +1,2 @@
+# Static golden contract
+# HTTP / HTTP/1.1

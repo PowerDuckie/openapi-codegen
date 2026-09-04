@@ -1,0 +1,65 @@
+{
+  "name": "@powerduck/openapi-codegen",
+  "version": "0.4.0",
+  "description": "Generate HTTP client examples from OpenAPI documents.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PowerDuckie/-powerduck-openapi-codegen.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PowerDuckie/-powerduck-openapi-codegen/issues"
+  },
+  "homepage": "https://github.com/PowerDuckie/-powerduck-openapi-codegen#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "demo": "tsx demo/demo.ts",
+    "fuzz": "vitest run tests/fuzz.test.ts",
+    "check": "npm test && npm run fuzz && npm run build",
+    "preversion": "npm run check",
+    "version": "git add package.json package-lock.json",
+    "postversion": "git push && git push --tags",
+    "prepublishOnly": "npm run check",
+    "release:patch": "npm version patch",
+    "release:minor": "npm version minor",
+    "release:major": "npm version major"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "openapi",
+    "codegen",
+    "http-client",
+    "api",
+    "generator"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "fast-check": "^4.0.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}
