@@ -1,6 +1,6 @@
 {
   "name": "@powerduck/openapi-codegen",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Generate HTTP client examples from OpenAPI documents.",
   "type": "module",
   "main": "./dist/index.js",
