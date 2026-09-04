@@ -1,263 +1,413 @@
-import { example, ExampleGenContext } from "./example";
+import { example, type ExampleGenContext } from "./example";
 import { RefResolver } from "./refs";
-import { isRecord, firstDefined, lightweightOpenAPIPreCheck } from "./helpers";
+import { firstDefined, isRecord, lightweightOpenAPIPreCheck } from "./helpers";
 
-/** local type-assert helper, moved to module top-level to avoid nested-function TS error */
-function assertIsRecord(v: unknown): asserts v is Record<string, unknown> {
-  if (!isRecord(v)) throw new TypeError("expected record object");
-}
+const HTTP_METHODS = new Set([
+  "get",
+  "put",
+  "post",
+  "delete",
+  "options",
+  "head",
+  "patch",
+  "trace",
+]);
 
-function pickContent(
-  content: Record<string, unknown> | undefined,
-): [string, unknown] | undefined {
-  if (!content) {
-    return undefined;
-  }
-  const entries = Object.entries(content);
-  const preferred = [
-    /^application\/([a-z0-9.+-]+\+)?json(?:;.*)?$/i,
-    /^application\/x-www-form-urlencoded(?:;.*)?$/i,
-    /^multipart\/form-data(?:;.*)?$/i,
-    /^text\//i,
-    /^application\/octet-stream(?:;.*)?$/i,
-  ];
-  for (const matcher of preferred) {
-    const match = entries.find(([mediaType]) => matcher.test(mediaType));
-    if (match) {
-      return match;
-    }
-  }
-  return entries[0];
-}
+const CONTENT_PREFERENCES: RegExp[] = [
+  /^application\/(?:[a-z0-9.+-]+\+)?json(?:\s*;.*)?$/i,
+  /^application\/x-www-form-urlencoded(?:\s*;.*)?$/i,
+  /^multipart\/form-data(?:\s*;.*)?$/i,
+  /^text\/[a-z0-9.+-]+(?:\s*;.*)?$/i,
+  /^application\/octet-stream(?:\s*;.*)?$/i,
+];
 
-function mergeParameters(
-  pathParameters: unknown[],
-  operationParameters: unknown[],
-  resolver: RefResolver,
-): unknown[] {
-  const merged = new Map<string, unknown>();
-  for (const entry of [...pathParameters, ...operationParameters]) {
-    const parameter = resolver.deref(entry);
-    if (!isRecord(parameter)) continue;
-    const nameVal = parameter.name;
-    const inVal = parameter.in;
-    if (typeof nameVal !== "string" || typeof inVal !== "string") continue;
-    const key = `${inVal}:${nameVal}`;
-    if (!merged.has(key)) {
-      merged.set(key, parameter);
-    }
-  }
-  return [...merged.values()];
-}
-
-/**
- * Read example value from MediaType Object following OAS3.2 semantics.
- * Priority: mediaTypeObject.example → mediaTypeObject.examples map first entry value → schema-derived example
- */
-/**
- * Read example value from MediaType Object following OAS3.2 semantics.
- * Priority: mediaTypeObject.example → mediaTypeObject.examples map first entry value → schema‑derived example
- */
-function readExampleForMediaType(
-  mediaTypeObject: unknown,
-  resolver: RefResolver,
-  ctx: ExampleGenContext,
-): unknown {
-  if (!isRecord(mediaTypeObject)) return undefined;
-  if (mediaTypeObject.example !== undefined) {
-    return mediaTypeObject.example;
-  }
-  if (isRecord(mediaTypeObject.examples)) {
-    const first = Object.values(mediaTypeObject.examples)[0];
-    if (first !== undefined) {
-      const resolvedExampleObj = resolver.deref(first);
-      if (
-        isRecord(resolvedExampleObj) &&
-        resolvedExampleObj.value !== undefined
-      ) {
-        return resolvedExampleObj.value;
-      }
-    }
-  }
-  return example(mediaTypeObject.schema, resolver, undefined, 0, ctx);
-}
-
-/**
- * Read first ExampleObject.value from examples map (parameter / media-type examples map).
- * Resolves $ref on example object.
- */
-function readFirstExampleValue(
-  examples: unknown,
-  resolver: RefResolver,
-): unknown {
-  if (!isRecord(examples)) {
-    return undefined;
-  }
-  const firstEntry = Object.values(examples)[0];
-  if (firstEntry === undefined) {
-    return undefined;
-  }
-  const resolved = resolver.deref(firstEntry);
-  return isRecord(resolved) ? resolved.value : undefined;
-}
-
-export function normalize(options: {
+interface NormalizeOptions {
   document: unknown;
   path: string;
   method: string;
   serverUrl?: string;
   securityValues?: Record<string, string>;
   softRefMode?: boolean;
-}) {
-  const root = options.document;
-  const preWarnings = lightweightOpenAPIPreCheck(root);
-  const resolver = new RefResolver(root, !!options.softRefMode);
+}
 
-  // narrow type once, reduce repeated casting
-  const rootRec = isRecord(root) ? root : undefined;
-  const paths = rootRec?.paths;
+interface NormalizedParameter {
+  name: string;
+  in: string;
+  value: unknown;
+  style?: string;
+  explode?: boolean;
+  allowReserved?: boolean;
+}
 
-  let pathItem: unknown;
-  if (isRecord(paths)) {
-    pathItem = resolver.deref(paths[options.path]);
+interface NormalizedSecurity {
+  name: string;
+  type: string;
+  scheme?: string;
+  in?: string;
+  paramName?: string;
+  value: string;
+}
+
+function own(object: Record<string, unknown>, key: string): boolean {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
+function nonBlankString(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function normalizeMethod(value: unknown): string {
+  const method = nonBlankString(value)?.toLowerCase();
+
+  if (!method || !HTTP_METHODS.has(method)) {
+    throw new Error(`Unsupported HTTP method: ${String(value)}`);
   }
 
-  const methodLower = String(options.method).toLowerCase();
-  const operation = isRecord(pathItem)
-    ? resolver.deref(pathItem[methodLower])
-    : undefined;
+  return method;
+}
 
-  if (!isRecord(operation)) {
-    throw new Error("Operation not found");
+function pickContent(content: unknown): [string, unknown] | undefined {
+  if (!isRecord(content)) return undefined;
+
+  const entries = Object.entries(content).filter(
+    ([mediaType]) => mediaType.trim().length > 0,
+  );
+
+  for (const matcher of CONTENT_PREFERENCES) {
+    const match = entries.find(([mediaType]) => matcher.test(mediaType.trim()));
+    if (match) return match;
   }
 
-  const pathItemParams =
-    isRecord(pathItem) && Array.isArray(pathItem.parameters)
-      ? (pathItem.parameters as unknown[])
-      : [];
-  const opParams = Array.isArray(operation.parameters)
-    ? (operation.parameters as unknown[])
-    : [];
+  return entries[0];
+}
 
-  const mergedParameters = mergeParameters(pathItemParams, opParams, resolver);
+/**
+ * Merge path-level and operation-level parameters.
+ *
+ * OpenAPI defines a parameter's identity as the combination of `name` and
+ * `in`. Operation-level parameters override path-level parameters.
+ */
+function mergeParameters(
+  pathParameters: unknown,
+  operationParameters: unknown,
+  resolver: RefResolver,
+): Record<string, unknown>[] {
+  const merged = new Map<string, Record<string, unknown>>();
 
-  const parameterEntries = mergedParameters.map((parameter) => {
-    assertIsRecord(parameter);
-    return {
-      name: String(parameter.name),
-      in: String(parameter.in),
-      value: firstDefined(
-        parameter.example,
-        readFirstExampleValue(parameter.examples, resolver),
-        example(parameter.schema, resolver),
-      ),
-      style: typeof parameter.style === "string" ? parameter.style : undefined,
-      explode:
-        typeof parameter.explode === "boolean" ? parameter.explode : undefined,
-      allowReserved:
-        typeof parameter.allowReserved === "boolean"
-          ? parameter.allowReserved
-          : undefined,
-    };
+  const add = (entries: unknown, overwrite: boolean): void => {
+    if (!Array.isArray(entries)) return;
+
+    for (const entry of entries) {
+      const parameter = resolver.deref(entry);
+      if (!isRecord(parameter)) continue;
+
+      const name = nonBlankString(parameter.name);
+      const location = nonBlankString(parameter.in)?.toLowerCase();
+
+      if (!name || !location) continue;
+
+      const key = `${location}\u0000${name}`;
+      if (overwrite || !merged.has(key)) {
+        merged.set(key, parameter);
+      }
+    }
+  };
+
+  add(pathParameters, false);
+  add(operationParameters, true);
+
+  return [...merged.values()];
+}
+
+/**
+ * Read the first usable value from an OpenAPI examples map.
+ *
+ * Example Object references are resolved. Inline Example Objects and direct
+ * values are both accepted for resilience.
+ */
+function readFirstExampleValue(
+  examples: unknown,
+  resolver: RefResolver,
+): unknown {
+  if (!isRecord(examples)) return undefined;
+
+  for (const entry of Object.values(examples)) {
+    const resolved = resolver.deref(entry);
+
+    if (isRecord(resolved) && own(resolved, "value")) {
+      return resolved.value;
+    }
+
+    if (!isRecord(resolved) && resolved !== undefined) {
+      return resolved;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Select a request example according to OpenAPI precedence:
+ * Media Type Object `example`, first usable `examples` entry, then schema.
+ */
+function readExampleForMediaType(
+  mediaTypeObject: unknown,
+  resolver: RefResolver,
+  context: ExampleGenContext,
+): unknown {
+  const resolved = resolver.deref(mediaTypeObject);
+  if (!isRecord(resolved)) return undefined;
+
+  if (own(resolved, "example")) {
+    return resolved.example;
+  }
+
+  const examplesValue = readFirstExampleValue(resolved.examples, resolver);
+  if (examplesValue !== undefined) {
+    return examplesValue;
+  }
+
+  return example(resolved.schema, resolver, undefined, 0, context);
+}
+
+function resolveServerUrl(server: unknown): string | undefined {
+  if (!isRecord(server)) return undefined;
+
+  let url = nonBlankString(server.url);
+  if (!url) return undefined;
+
+  const variables = isRecord(server.variables) ? server.variables : undefined;
+
+  url = url.replace(/\{([^{}]+)\}/g, (placeholder, variableName: string) => {
+    if (!variables) return placeholder;
+
+    const variable = variables[variableName];
+    if (!isRecord(variable)) return placeholder;
+
+    const value = firstDefined(variable.default, variable.example);
+    return value === undefined
+      ? placeholder
+      : encodeURIComponent(String(value));
   });
 
-  const requestBody = resolver.deref(operation.requestBody);
-  const chosen = isRecord(requestBody)
-    ? pickContent(requestBody.content as Record<string, unknown> | undefined)
-    : undefined;
+  return url;
+}
 
-  // inside normalize(), body context (request body): skip readOnly, do NOT skip writeOnly
-  const bodyCtx: ExampleGenContext = { isRequestBody: true, isResponse: false };
+function firstServerUrl(servers: unknown): string | undefined {
+  if (!Array.isArray(servers)) return undefined;
 
-  const body = chosen
-    ? {
-        mediaType: chosen[0],
-        value: readExampleForMediaType(chosen[1], resolver, bodyCtx),
-        encoding: isRecord(chosen[1])
-          ? (chosen[1] as Record<string, unknown>).encoding
-          : undefined,
-      }
-    : undefined;
-
-  const security: Array<{
-    name: string;
-    type: string;
-    scheme?: string;
-    in?: string;
-    paramName?: string;
-    value: string;
-  }> = [];
-
-  // fix ts(18046): narrow unknown to array
-  let effectiveSecurity: unknown[] = [];
-  if (Array.isArray(operation.security)) {
-    effectiveSecurity = operation.security;
-  } else if (rootRec && Array.isArray(rootRec.security)) {
-    effectiveSecurity = rootRec.security;
+  for (const server of servers) {
+    const url = resolveServerUrl(server);
+    if (url) return url;
   }
 
-  // fix syntax error ?.[name] → ?.[xxx] is invalid; use intermediate variable
-  const components = rootRec?.components;
-  const securitySchemes = isRecord(components)
-    ? components.securitySchemes
-    : undefined;
+  return undefined;
+}
 
-  for (const requirement of effectiveSecurity) {
+function resolveBaseUrl(
+  explicitServerUrl: unknown,
+  operation: Record<string, unknown>,
+  pathItem: Record<string, unknown>,
+  root: Record<string, unknown>,
+): string {
+  return (
+    nonBlankString(explicitServerUrl) ??
+    firstServerUrl(operation.servers) ??
+    firstServerUrl(pathItem.servers) ??
+    firstServerUrl(root.servers) ??
+    "https://example.com"
+  );
+}
+
+function resolveSecuritySchemes(
+  root: Record<string, unknown>,
+): Record<string, unknown> | undefined {
+  if (!isRecord(root.components)) return undefined;
+  return isRecord(root.components.securitySchemes)
+    ? root.components.securitySchemes
+    : undefined;
+}
+
+function normalizeSecurity(
+  root: Record<string, unknown>,
+  operation: Record<string, unknown>,
+  resolver: RefResolver,
+  securityValues: Record<string, string> | undefined,
+): NormalizedSecurity[] {
+  /*
+   * An operation-level empty security array explicitly disables inherited
+   * root security.
+   */
+  const requirements = Array.isArray(operation.security)
+    ? operation.security
+    : Array.isArray(root.security)
+      ? root.security
+      : [];
+
+  const schemes = resolveSecuritySchemes(root);
+  if (!schemes) return [];
+
+  const result: NormalizedSecurity[] = [];
+  const seen = new Set<string>();
+
+  /*
+   * Security Requirement Objects are alternatives, while properties within
+   * one object are combined. This normalized representation remains flat for
+   * compatibility with existing emitters.
+   */
+  for (const requirement of requirements) {
     if (!isRecord(requirement)) continue;
+
     for (const name of Object.keys(requirement)) {
-      let scheme: unknown;
-      if (isRecord(securitySchemes)) {
-        scheme = resolver.deref(securitySchemes[name]);
-      }
+      if (seen.has(name)) continue;
+
+      const scheme = resolver.deref(schemes[name]);
       if (!isRecord(scheme)) continue;
-      security.push({
+
+      const type = nonBlankString(scheme.type);
+      if (!type) continue;
+
+      seen.add(name);
+      result.push({
         name,
-        type: String(scheme.type),
-        scheme: typeof scheme.scheme === "string" ? scheme.scheme : undefined,
-        in: typeof scheme.in === "string" ? scheme.in : undefined,
-        paramName: typeof scheme.name === "string" ? scheme.name : undefined,
-        value: options.securityValues?.[name] ?? `{{${name}}}`,
+        type,
+        scheme: nonBlankString(scheme.scheme)?.toLowerCase(),
+        in: nonBlankString(scheme.in)?.toLowerCase(),
+        paramName: nonBlankString(scheme.name),
+        value: securityValues?.[name] ?? `{{${name}}}`,
       });
     }
   }
 
-  // resolve baseUrl
-  let baseUrl = options.serverUrl;
-  if (
-    !baseUrl &&
-    Array.isArray(operation.servers) &&
-    isRecord(operation.servers[0])
-  ) {
-    baseUrl = String(operation.servers[0].url);
+  return result;
+}
+
+export function normalize(options: NormalizeOptions) {
+  if (!isRecord(options)) {
+    throw new TypeError("normalize options must be an object");
   }
-  if (
-    !baseUrl &&
-    isRecord(pathItem) &&
-    Array.isArray(pathItem.servers) &&
-    isRecord(pathItem.servers[0])
-  ) {
-    baseUrl = String(pathItem.servers[0].url);
+
+  if (!isRecord(options.document)) {
+    throw new TypeError("OpenAPI document root must be a plain object");
   }
-  if (
-    !baseUrl &&
-    Array.isArray(rootRec?.servers) &&
-    isRecord((rootRec?.servers as unknown[])[0])
-  ) {
-    baseUrl = String(
-      ((rootRec?.servers as unknown[])[0] as Record<string, unknown>).url,
-    );
+
+  const root = options.document;
+  const preWarnings = lightweightOpenAPIPreCheck(root);
+  const resolver = new RefResolver(root, options.softRefMode === true);
+
+  const path = nonBlankString(options.path);
+  if (!path) {
+    throw new TypeError("OpenAPI path must be a non-empty string");
   }
-  if (!baseUrl) {
-    baseUrl = "https://example.com";
+
+  const method = normalizeMethod(options.method);
+
+  if (!isRecord(root.paths)) {
+    throw new Error("OpenAPI document does not define a valid paths object");
   }
+
+  if (!own(root.paths, path)) {
+    throw new Error(`Path not found: ${path}`);
+  }
+
+  const pathItem = resolver.deref(root.paths[path]);
+  if (!isRecord(pathItem)) {
+    throw new Error(`Invalid Path Item Object: ${path}`);
+  }
+
+  const operation = resolver.deref(pathItem[method]);
+  if (!isRecord(operation)) {
+    throw new Error(`Operation not found: ${method.toUpperCase()} ${path}`);
+  }
+
+  const mergedParameters = mergeParameters(
+    pathItem.parameters,
+    operation.parameters,
+    resolver,
+  );
+
+  const parameters: NormalizedParameter[] = mergedParameters.map(
+    (parameter) => {
+      const name = nonBlankString(parameter.name);
+      const location = nonBlankString(parameter.in)?.toLowerCase();
+
+      if (!name || !location) {
+        throw new TypeError("Resolved parameter must define name and in");
+      }
+
+      const parameterExample = own(parameter, "example")
+        ? parameter.example
+        : undefined;
+
+      return {
+        name,
+        in: location,
+        value: firstDefined(
+          parameterExample,
+          readFirstExampleValue(parameter.examples, resolver),
+          example(parameter.schema, resolver),
+        ),
+        style: nonBlankString(parameter.style),
+        explode:
+          typeof parameter.explode === "boolean"
+            ? parameter.explode
+            : undefined,
+        allowReserved:
+          typeof parameter.allowReserved === "boolean"
+            ? parameter.allowReserved
+            : undefined,
+      };
+    },
+  );
+
+  const requestBody = resolver.deref(operation.requestBody);
+  const chosen = isRecord(requestBody)
+    ? pickContent(requestBody.content)
+    : undefined;
+
+  const bodyContext: ExampleGenContext = {
+    isRequestBody: true,
+    isResponse: false,
+  };
+
+  let body:
+    | {
+        mediaType: string;
+        value: unknown;
+        encoding?: unknown;
+      }
+    | undefined;
+
+  if (chosen) {
+    const mediaTypeObject = resolver.deref(chosen[1]);
+
+    body = {
+      mediaType: chosen[0],
+      value: readExampleForMediaType(mediaTypeObject, resolver, bodyContext),
+      encoding: isRecord(mediaTypeObject)
+        ? mediaTypeObject.encoding
+        : undefined,
+    };
+  }
+
+  const security = normalizeSecurity(
+    root,
+    operation,
+    resolver,
+    options.securityValues,
+  );
+
+  const baseUrl = resolveBaseUrl(options.serverUrl, operation, pathItem, root);
 
   return {
     preWarnings,
-    method: String(options.method).toUpperCase(),
+    method: method.toUpperCase(),
     baseUrl,
-    path: options.path,
-    parameters: parameterEntries,
-    headers: parameterEntries.filter((parameter) => parameter.in === "header"),
+    path,
+    parameters,
+    headers: parameters.filter((parameter) => parameter.in === "header"),
     body,
     security,
   };
